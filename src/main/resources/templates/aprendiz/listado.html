@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Aprendices | Sistema Académico SENA</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+</head>
+<body>
+    <header class="app-header">
+        <strong>SENA | Aprendices</strong>
+        <a th:href="@{/inicio}">← Volver al inicio</a>
+    </header>
+    <main>
+        <h1>Aprendices</h1>
+        <p class="mensaje" th:if="${mensaje}" th:text="${mensaje}"></p>
+        <p class="error" th:if="${error}" th:text="${error}"></p>
+
+        <p class="vacio" th:if="${aprendices.empty}">No hay aprendices registrados.</p>
+
+        <table th:unless="${aprendices.empty}">
+            <thead><tr><th>Nombre</th><th>Correo</th><th>Documento</th><th>Estado formativo</th><th></th></tr></thead>
+            <tbody>
+                <tr th:each="a : ${aprendices}">
+                    <td th:text="${a.usuario.nombreCompleto}"></td>
+                    <td th:text="${a.usuario.correo}"></td>
+                    <td th:text="${a.usuario.documento}"></td>
+                    <td><span class="badge" th:text="${a.estadoFormativo}"></span></td>
+                    <td>
+                        <form th:action="@{/coordinacion/aprendices/{id}/estado-formativo(id=${a.id})}" method="post" style="display:flex; gap:0.4rem;">
+                            <select name="estado">
+                                <option th:each="e : ${estadosFormativos}" th:value="${e}" th:text="${e}" th:selected="${e == a.estadoFormativo}"></option>
+                            </select>
+                            <button class="btn secundario" type="submit">Actualizar</button>
+                        </form>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>Crear perfil de aprendiz</h2>
+        <p style="color:#666; font-size:0.85rem;">El usuario debe existir previamente y tener el rol APRENDIZ asignado.</p>
+        <form class="tarjeta" th:action="@{/coordinacion/aprendices}" method="post">
+            <div>
+                <label for="correo">Correo del usuario</label>
+                <input type="email" id="correo" name="correo" required>
+            </div>
+            <button class="btn" type="submit">Crear</button>
+        </form>
+    </main>
+</body>
+</html>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Programa | Sistema Académico SENA</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+</head>
+<body>
+    <header class="app-header">
+        <strong>SENA | Programas</strong>
+        <a th:href="@{/coordinacion/programas}">← Volver al listado</a>
+    </header>
+    <main>
+        <p class="mensaje" th:if="${mensaje}" th:text="${mensaje}"></p>
+        <p class="error" th:if="${error}" th:text="${error}"></p>
+
+        <h1 th:text="${programa.codigo} + ' - ' + ${programa.nombre}"></h1>
+        <p>
+            <span class="badge" th:text="${programa.nivel}"></span>
+            <span class="badge" th:classappend="${programa.estado}" th:text="${programa.estado}"></span>
+            &nbsp;Versión <strong th:text="${programa.version}"></strong>
+            &nbsp;·&nbsp; <span th:text="${programa.duracionHoras}"></span> horas
+        </p>
+
+        <div class="acciones">
+            <form th:if="${programa.estado.name() == 'ACTIVO'}" th:action="@{/coordinacion/programas/{id}/desactivar(id=${programa.id})}" method="post">
+                <button class="btn peligro" type="submit">Inactivar programa</button>
+            </form>
+            <form th:if="${programa.estado.name() == 'INACTIVO'}" th:action="@{/coordinacion/programas/{id}/activar(id=${programa.id})}" method="post">
+                <button class="btn" type="submit">Reactivar programa</button>
+            </form>
+        </div>
+
+        <h2>Competencias y resultados de aprendizaje</h2>
+        <p class="vacio" th:if="${programa.competencias.empty}">Este programa aún no tiene competencias registradas.</p>
+
+        <div th:each="c : ${programa.competencias}" style="margin-bottom:1.5rem;">
+            <strong th:text="${c.codigo} + ' - ' + ${c.nombre}"></strong>
+            <table th:unless="${c.resultadosAprendizaje.empty}">
+                <thead><tr><th>Código</th><th>Descripción</th></tr></thead>
+                <tbody>
+                    <tr th:each="r : ${c.resultadosAprendizaje}">
+                        <td th:text="${r.codigo}"></td>
+                        <td th:text="${r.descripcion}"></td>
+                    </tr>
+                </tbody>
+            </table>
+            <form class="filtros" th:action="@{/coordinacion/competencias/{id}/resultados(id=${c.id})}" method="post" style="margin-top:0.5rem;">
+                <input type="hidden" name="programaId" th:value="${programa.id}">
+                <div>
+                    <label>Código resultado</label>
+                    <input type="text" name="codigo" required>
+                </div>
+                <div>
+                    <label>Descripción</label>
+                    <input type="text" name="descripcion" required style="min-width:300px;">
+                </div>
+                <button class="btn secundario" type="submit">+ Agregar resultado</button>
+            </form>
+        </div>
+
+        <h2>Agregar competencia</h2>
+        <form class="filtros" th:action="@{/coordinacion/programas/{id}/competencias(id=${programa.id})}" method="post">
+            <div>
+                <label>Código</label>
+                <input type="text" name="codigo" required>
+            </div>
+            <div>
+                <label>Nombre</label>
+                <input type="text" name="nombre" required style="min-width:300px;">
+            </div>
+            <button class="btn" type="submit">+ Agregar competencia</button>
+        </form>
+    </main>
+</body>
+</html>

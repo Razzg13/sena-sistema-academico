@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Nueva ficha | Sistema Académico SENA</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+</head>
+<body>
+    <header class="app-header">
+        <strong>SENA | Fichas</strong>
+        <a th:href="@{/coordinacion/fichas}">← Volver al listado</a>
+    </header>
+    <main>
+        <h1>Nueva ficha</h1>
+
+        <form class="tarjeta" th:action="@{/coordinacion/fichas}" th:object="${form}" method="post">
+            <div>
+                <label for="numero">Número</label>
+                <input type="text" id="numero" th:field="*{numero}" required>
+            </div>
+            <div>
+                <label for="programaId">Programa</label>
+                <select id="programaId" th:field="*{programaId}" required>
+                    <option value="">Seleccione...</option>
+                    <option th:each="p : ${programas}" th:value="${p.id}" th:text="${p.codigo} + ' - ' + ${p.nombre}"></option>
+                </select>
+            </div>
+            <div>
+                <label for="jornada">Jornada</label>
+                <select id="jornada" th:field="*{jornada}" required>
+                    <option value="">Seleccione...</option>
+                    <option th:each="j : ${jornadas}" th:value="${j}" th:text="${j}"></option>
+                </select>
+            </div>
+            <div>
+                <label for="fechaInicio">Fecha de inicio</label>
+                <input type="date" id="fechaInicio" th:field="*{fechaInicio}" required>
+            </div>
+            <div>
+                <label for="fechaFin">Fecha de fin</label>
+                <input type="date" id="fechaFin" th:field="*{fechaFin}" required>
+            </div>
+            <div>
+                <label for="ambiente">Ambiente</label>
+                <input type="text" id="ambiente" th:field="*{ambiente}" required>
+            </div>
+            <button class="btn" type="submit">Guardar</button>
+        </form>
+    </main>
+</body>
+</html>

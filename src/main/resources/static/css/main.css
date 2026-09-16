@@ -1,0 +1,39 @@
+body { font-family: Arial, sans-serif; margin: 0; color: #222; background: #fff; }
+
+header.app-header { background: #0B4F6C; color: #fff; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
+header.app-header a { color: #fff; text-decoration: none; }
+header.app-header form.logout button { background: none; border: 1px solid #fff; color: #fff; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; }
+
+main { padding: 2rem; max-width: 1100px; margin: 0 auto; }
+h1 { color: #0B4F6C; font-size: 1.3rem; }
+h2 { color: #0B4F6C; font-size: 1.1rem; margin-top: 2rem; }
+
+.mensaje { background: #e6f4ea; color: #1e7d32; padding: 0.7rem 1rem; border-radius: 6px; margin-bottom: 1rem; }
+.error { background: #fdecea; color: #b00020; padding: 0.7rem 1rem; border-radius: 6px; margin-bottom: 1rem; }
+.vacio { color: #777; padding: 1rem 0; }
+
+form.filtros, form.tarjeta { display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: end; background: #EAF4F7; padding: 1rem; border-radius: 6px; }
+form.tarjeta { flex-direction: column; align-items: stretch; max-width: 480px; }
+form label { display: block; font-size: 0.8rem; margin-bottom: 0.2rem; color: #333; }
+form input, form select, form textarea { padding: 0.5rem; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; width: 100%; font-family: inherit; }
+form.filtros input, form.filtros select { width: auto; }
+.btn { display: inline-block; padding: 0.5rem 1rem; background: #0B4F6C; color: #fff; border: none; border-radius: 4px; cursor: pointer; text-decoration: none; font-size: 0.9rem; }
+.btn.secundario { background: #fff; color: #0B4F6C; border: 1px solid #0B4F6C; }
+.btn.peligro { background: #b00020; }
+
+table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+th, td { text-align: left; padding: 0.5rem 0.75rem; border-bottom: 1px solid #eee; font-size: 0.9rem; }
+th { background: #f5f5f5; }
+
+.badge { display: inline-block; padding: 0.15rem 0.6rem; border-radius: 10px; font-size: 0.75rem; color: #fff; background: #607d8b; }
+.badge.ACTIVO { background: #2e7d32; }
+.badge.INACTIVO { background: #757575; }
+.badge.CREACION { background: #2e7d32; }
+.badge.MODIFICACION { background: #ef6c00; }
+.badge.INACTIVACION { background: #b00020; }
+.badge.EVALUACION { background: #0B4F6C; }
+
+.paginacion { margin-top: 1rem; display: flex; gap: 0.5rem; align-items: center; }
+.paginacion a { color: #0B4F6C; text-decoration: none; padding: 0.3rem 0.6rem; border: 1px solid #ccc; border-radius: 4px; }
+
+.acciones { display: flex; gap: 0.5rem; margin-top: 1rem; }

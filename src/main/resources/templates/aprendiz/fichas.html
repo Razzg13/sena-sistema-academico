@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Mis fichas | Sistema Académico SENA</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+</head>
+<body>
+    <header class="app-header">
+        <strong>SENA | Mis fichas</strong>
+        <a th:href="@{/inicio}">← Volver al inicio</a>
+    </header>
+    <main>
+        <h1>Mis fichas</h1>
+
+        <p class="vacio" th:if="${matriculas.empty}">No tienes matrículas activas.</p>
+
+        <table th:unless="${matriculas.empty}">
+            <thead><tr><th>Ficha</th><th>Programa</th><th>Jornada</th><th>Estado matrícula</th></tr></thead>
+            <tbody>
+                <tr th:each="m : ${matriculas}">
+                    <td><a th:href="@{/aprendiz/fichas/{id}(id=${m.ficha.id})}" th:text="${m.ficha.numero}"></a></td>
+                    <td th:text="${m.ficha.programa.codigo} + ' - ' + ${m.ficha.programa.nombre}"></td>
+                    <td th:text="${m.ficha.jornada}"></td>
+                    <td><span class="badge" th:text="${m.estado}"></span></td>
+                </tr>
+            </tbody>
+        </table>
+    </main>
+</body>
+</html>

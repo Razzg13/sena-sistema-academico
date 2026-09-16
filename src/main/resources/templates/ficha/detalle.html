@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Ficha | Sistema Académico SENA</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+</head>
+<body>
+    <header class="app-header">
+        <strong>SENA | Fichas</strong>
+        <a th:href="@{/coordinacion/fichas}">← Volver al listado</a>
+    </header>
+    <main>
+        <p class="mensaje" th:if="${mensaje}" th:text="${mensaje}"></p>
+        <p class="error" th:if="${error}" th:text="${error}"></p>
+
+        <h1 th:text="'Ficha ' + ${ficha.numero}"></h1>
+        <p>
+            <span class="badge" th:text="${ficha.estado}"></span>
+            &nbsp;<strong th:text="${ficha.programa.codigo} + ' - ' + ${ficha.programa.nombre}"></strong>
+            &nbsp;·&nbsp; <span th:text="${ficha.jornada}"></span>
+            &nbsp;·&nbsp; <span th:text="${ficha.fechaInicio} + ' a ' + ${ficha.fechaFin}"></span>
+            &nbsp;·&nbsp; Ambiente: <span th:text="${ficha.ambiente}"></span>
+        </p>
+
+        <div class="acciones" sec:authorize="hasAnyRole('ADMINISTRADOR', 'COORDINACION_ACADEMICA', 'CONSULTA_AUDITOR')">
+            <a class="btn secundario" target="_blank" th:href="@{/reportes/fichas/{id}/consolidado(id=${ficha.id})}">Reporte: Consolidado</a>
+            <a class="btn secundario" target="_blank" th:href="@{/reportes/fichas/{id}/asistencia(id=${ficha.id})}">Reporte: Asistencia</a>
+            <a class="btn secundario" target="_blank" th:href="@{/reportes/fichas/{id}/calificaciones(id=${ficha.id})}">Reporte: Calificaciones</a>
+            <a class="btn secundario" target="_blank" th:href="@{/reportes/fichas/{id}/evidencias(id=${ficha.id})}">Reporte: Evidencias</a>
+        </div>
+
+        <form class="filtros" sec:authorize="hasAnyRole('ADMINISTRADOR', 'COORDINACION_ACADEMICA')"
+              th:action="@{/coordinacion/fichas/{id}/estado(id=${ficha.id})}" method="post">
+            <div>
+                <label>Cambiar estado</label>
+                <select name="estado">
+                    <option th:each="e : ${estados}" th:value="${e}" th:text="${e}" th:selected="${e == ficha.estado}"></option>
+                </select>
+            </div>
+            <button class="btn secundario" type="submit">Actualizar estado</button>
+        </form>
+
+        <h2>Instructores asignados</h2>
+        <p class="vacio" th:if="${ficha.asignaciones.empty}">Aún no hay instructores asignados a esta ficha.</p>
+        <table th:unless="${ficha.asignaciones.empty}">
+            <thead><tr><th>Instructor</th><th>Especialidad</th><th>Desde</th><th>Hasta</th></tr></thead>
+            <tbody>
+                <tr th:each="a : ${ficha.asignaciones}">
+                    <td th:text="${a.instructor.usuario.nombreCompleto}"></td>
+                    <td th:text="${a.instructor.especialidad}"></td>
+                    <td th:text="${a.fechaInicio}"></td>
+                    <td th:text="${a.fechaFin}"></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div sec:authorize="hasAnyRole('ADMINISTRADOR', 'COORDINACION_ACADEMICA')">
+        <h2>Asignar instructor</h2>
+        <p class="vacio" th:if="${instructores.empty}">
+            No hay instructores activos. Crea uno en <a th:href="@{/coordinacion/instructores}">Instructores</a>.
+        </p>
+        <form class="filtros" th:unless="${instructores.empty}"
+              th:action="@{/coordinacion/fichas/{id}/instructores(id=${ficha.id})}" method="post">
+            <div>
+                <label>Instructor</label>
+                <select name="instructorId" required>
+                    <option th:each="i : ${instructores}" th:value="${i.id}"
+                            th:text="${i.usuario.nombreCompleto} + ' (' + ${i.especialidad} + ')'"></option>
+                </select>
+            </div>
+            <div>
+                <label>Desde</label>
+                <input type="date" name="desde" required>
+            </div>
+            <div>
+                <label>Hasta</label>
+                <input type="date" name="hasta" required>
+            </div>
+            <button class="btn" type="submit">Asignar</button>
+        </form>
+        </div>
+
+        <h2>Aprendices matriculados</h2>
+        <p class="vacio" th:if="${matriculas.empty}">Aún no hay aprendices matriculados en esta ficha.</p>
+        <table th:unless="${matriculas.empty}">
+            <thead><tr><th>Aprendiz</th><th>Correo</th><th>Fecha matrícula</th><th>Estado</th><th></th></tr></thead>
+            <tbody>
+                <tr th:each="m : ${matriculas}">
+                    <td th:text="${m.aprendiz.usuario.nombreCompleto}"></td>
+                    <td th:text="${m.aprendiz.usuario.correo}"></td>
+                    <td th:text="${m.fechaMatricula}"></td>
+                    <td><span class="badge" th:text="${m.estado}"></span></td>
+                    <td>
+                        <form th:if="${m.estado.name() == 'ACTIVA'}" sec:authorize="hasAnyRole('ADMINISTRADOR', 'COORDINACION_ACADEMICA')"
+                              th:action="@{/coordinacion/matriculas/{id}/cancelar(id=${m.id})}" method="post">
+                            <button class="btn peligro" type="submit">Cancelar</button>
+                        </form>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div sec:authorize="hasAnyRole('ADMINISTRADOR', 'COORDINACION_ACADEMICA')">
+        <h2>Matricular aprendiz</h2>
+        <p class="vacio" th:if="${aprendices.empty}">
+            No hay aprendices activos. Crea uno en <a th:href="@{/coordinacion/aprendices}">Aprendices</a>.
+        </p>
+        <form class="filtros" th:unless="${aprendices.empty}"
+              th:action="@{/coordinacion/fichas/{id}/matriculas(id=${ficha.id})}" method="post">
+            <div>
+                <label>Aprendiz</label>
+                <select name="aprendizId" required>
+                    <option th:each="a : ${aprendices}" th:value="${a.id}" th:text="${a.usuario.nombreCompleto}"></option>
+                </select>
+            </div>
+            <button class="btn" type="submit">Matricular</button>
+        </form>
+        </div>
+
+        <h2>Sesiones de formación</h2>
+        <p class="vacio" th:if="${sesiones.empty}">Aún no hay sesiones programadas para esta ficha.</p>
+        <table th:unless="${sesiones.empty}">
+            <thead><tr><th>Fecha</th><th>Horario</th><th>Tema</th><th></th></tr></thead>
+            <tbody>
+                <tr th:each="s : ${sesiones}">
+                    <td th:text="${s.fecha}"></td>
+                    <td th:text="${s.horaInicio} + ' - ' + ${s.horaFin}"></td>
+                    <td th:text="${s.tema}"></td>
+                    <td><a class="btn secundario" th:href="@{/coordinacion/sesiones/{id}/llamado(id=${s.id})}">Tomar asistencia</a></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>Programar sesión</h2>
+        <form class="filtros" th:action="@{/coordinacion/fichas/{id}/sesiones(id=${ficha.id})}" method="post">
+            <div>
+                <label>Fecha</label>
+                <input type="date" name="fecha" required>
+            </div>
+            <div>
+                <label>Hora inicio</label>
+                <input type="time" name="horaInicio" required>
+            </div>
+            <div>
+                <label>Hora fin</label>
+                <input type="time" name="horaFin" required>
+            </div>
+            <div>
+                <label>Tema</label>
+                <input type="text" name="tema" required style="min-width:250px;">
+            </div>
+            <button class="btn" type="submit">Programar</button>
+        </form>
+
+        <h2>Actividades evaluativas</h2>
+        <p class="vacio" th:if="${actividades.empty}">Aún no hay actividades evaluativas para esta ficha.</p>
+        <table th:unless="${actividades.empty}">
+            <thead><tr><th>Actividad</th><th>Resultado de aprendizaje</th><th>Fecha límite</th><th></th></tr></thead>
+            <tbody>
+                <tr th:each="act : ${actividades}">
+                    <td th:text="${act.nombre}"></td>
+                    <td th:text="${act.resultadoAprendizaje.codigo} + ' - ' + ${act.resultadoAprendizaje.descripcion}"></td>
+                    <td th:text="${act.fechaLimite}"></td>
+                    <td><a class="btn secundario" th:href="@{/coordinacion/actividades/{id}/calificar(id=${act.id})}">Calificar</a></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>Nueva actividad evaluativa</h2>
+        <p class="vacio" th:if="${ficha.programa.competencias.empty}">
+            El programa de esta ficha no tiene competencias ni resultados de aprendizaje registrados.
+            Agrégalos en <a th:href="@{/coordinacion/programas/{id}(id=${ficha.programa.id})}">Programas</a>.
+        </p>
+        <form class="tarjeta" th:unless="${ficha.programa.competencias.empty}"
+              th:action="@{/coordinacion/fichas/{id}/actividades(id=${ficha.id})}" method="post">
+            <div>
+                <label>Resultado de aprendizaje</label>
+                <select name="resultadoAprendizajeId" required>
+                    <optgroup th:each="c : ${ficha.programa.competencias}" th:label="${c.codigo} + ' - ' + ${c.nombre}">
+                        <option th:each="r : ${c.resultadosAprendizaje}" th:value="${r.id}"
+                                th:text="${r.codigo} + ' - ' + ${r.descripcion}"></option>
+                    </optgroup>
+                </select>
+            </div>
+            <div>
+                <label>Nombre de la actividad</label>
+                <input type="text" name="nombre" required>
+            </div>
+            <div>
+                <label>Descripción</label>
+                <input type="text" name="descripcion">
+            </div>
+            <div>
+                <label>Fecha límite</label>
+                <input type="date" name="fechaLimite" required>
+            </div>
+            <button class="btn" type="submit">Crear actividad</button>
+        </form>
+    </main>
+</body>
+</html>

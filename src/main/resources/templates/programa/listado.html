@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Programas | Sistema Académico SENA</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+</head>
+<body>
+    <header class="app-header">
+        <strong>SENA | Programas</strong>
+        <a th:href="@{/inicio}">← Volver al inicio</a>
+    </header>
+    <main>
+        <h1>Programas de formación</h1>
+        <p class="mensaje" th:if="${mensaje}" th:text="${mensaje}"></p>
+        <p class="error" th:if="${error}" th:text="${error}"></p>
+
+        <div class="acciones" style="margin-bottom:1rem;">
+            <a class="btn" th:href="@{/coordinacion/programas/nuevo}">+ Nuevo programa</a>
+        </div>
+
+        <form class="filtros" th:action="@{/coordinacion/programas}" method="get">
+            <div>
+                <label>Buscar por código o nombre</label>
+                <input type="text" name="texto" th:value="${texto}">
+            </div>
+            <button class="btn" type="submit">Buscar</button>
+        </form>
+
+        <p class="vacio" th:if="${programas.empty}">No hay programas registrados.</p>
+
+        <table th:unless="${programas.empty}">
+            <thead>
+                <tr>
+                    <th>Código</th>
+                    <th>Nombre</th>
+                    <th>Nivel</th>
+                    <th>Versión</th>
+                    <th>Duración (h)</th>
+                    <th>Estado</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="p : ${programas.content}">
+                    <td><a th:href="@{/coordinacion/programas/{id}(id=${p.id})}" th:text="${p.codigo}"></a></td>
+                    <td th:text="${p.nombre}"></td>
+                    <td th:text="${p.nivel}"></td>
+                    <td th:text="${p.version}"></td>
+                    <td th:text="${p.duracionHoras}"></td>
+                    <td><span class="badge" th:classappend="${p.estado}" th:text="${p.estado}"></span></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="paginacion" th:if="${programas.totalPages > 1}">
+            <span th:text="'Página ' + ${programas.number + 1} + ' de ' + ${programas.totalPages}"></span>
+            <a th:if="${programas.hasPrevious()}"
+               th:href="@{/coordinacion/programas(texto=${texto}, pagina=${programas.number - 1})}">« Anterior</a>
+            <a th:if="${programas.hasNext()}"
+               th:href="@{/coordinacion/programas(texto=${texto}, pagina=${programas.number + 1})}">Siguiente »</a>
+        </div>
+    </main>
+</body>
+</html>

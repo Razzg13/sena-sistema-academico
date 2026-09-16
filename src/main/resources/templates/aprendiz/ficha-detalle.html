@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Mi ficha | Sistema Académico SENA</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+</head>
+<body>
+    <header class="app-header">
+        <strong>SENA | Mis fichas</strong>
+        <a th:href="@{/aprendiz/fichas}">← Volver a mis fichas</a>
+    </header>
+    <main>
+        <p class="mensaje" th:if="${mensaje}" th:text="${mensaje}"></p>
+        <p class="error" th:if="${error}" th:text="${error}"></p>
+
+        <h1 th:text="'Ficha ' + ${ficha.numero}"></h1>
+        <p>
+            <strong th:text="${ficha.programa.codigo} + ' - ' + ${ficha.programa.nombre}"></strong>
+            &nbsp;·&nbsp; <span th:text="${ficha.jornada}"></span>
+            &nbsp;·&nbsp; <span th:text="${ficha.fechaInicio} + ' a ' + ${ficha.fechaFin}"></span>
+            &nbsp;·&nbsp; Ambiente: <span th:text="${ficha.ambiente}"></span>
+        </p>
+
+        <h2>Mi asistencia</h2>
+        <p class="vacio" th:if="${sesiones.empty}">Aún no hay sesiones programadas.</p>
+        <table th:unless="${sesiones.empty}">
+            <thead><tr><th>Fecha</th><th>Tema</th><th>Estado</th><th>Observación</th></tr></thead>
+            <tbody>
+                <tr th:each="s : ${sesiones}" th:with="a=${asistenciaPorSesion.get(s.id)}">
+                    <td th:text="${s.fecha}"></td>
+                    <td th:text="${s.tema}"></td>
+                    <td>
+                        <span th:if="${a != null}" class="badge" th:text="${a.estado}"></span>
+                        <span th:if="${a == null}" class="vacio">Sin registrar</span>
+                    </td>
+                    <td th:text="${a != null ? a.observacion : ''}"></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>Mis actividades y evidencias</h2>
+        <p class="vacio" th:if="${actividades.empty}">Aún no hay actividades evaluativas en esta ficha.</p>
+        <table th:unless="${actividades.empty}">
+            <thead><tr><th>Actividad</th><th>Fecha límite</th><th>Calificación</th><th>Juicio</th><th>Retroalimentación</th><th>Evidencia</th></tr></thead>
+            <tbody>
+                <tr th:each="act : ${actividades}"
+                    th:with="ev=${evaluacionPorActividad.get(act.id)}, evi=${evidenciaPorActividad.get(act.id)}">
+                    <td th:text="${act.nombre}"></td>
+                    <td th:text="${act.fechaLimite}"></td>
+                    <td th:text="${ev != null and ev.calificacion != null ? ev.calificacion : '-'}"></td>
+                    <td><span th:if="${ev != null}" class="badge" th:text="${ev.juicioEvaluacion}"></span></td>
+                    <td th:text="${ev != null ? ev.retroalimentacion : ''}"></td>
+                    <td>
+                        <div th:if="${evi != null}">
+                            <span class="badge" th:text="${evi.estado}"></span>
+                            <a th:href="@{/coordinacion/evidencias/{id}/descargar(id=${evi.id})}" th:text="${evi.archivo.nombreOriginal}"></a>
+                        </div>
+                        <form th:if="${evi == null}" th:action="@{/aprendiz/actividades/{id}/evidencias(id=${act.id})}"
+                              method="post" enctype="multipart/form-data" style="display:flex; gap:0.4rem;">
+                            <input type="hidden" name="fichaId" th:value="${ficha.id}">
+                            <input type="file" name="archivo" required>
+                            <button class="btn" type="submit">Entregar</button>
+                        </form>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <p style="color:#666; font-size:0.85rem;">Tipos permitidos: PDF, imágenes (PNG/JPG), ZIP, Word. Tamaño máximo: 10 MB.</p>
+    </main>
+</body>
+</html>

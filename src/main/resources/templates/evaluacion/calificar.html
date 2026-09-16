@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Calificar | Sistema Académico SENA</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+</head>
+<body>
+    <header class="app-header">
+        <strong>SENA | Evaluación</strong>
+        <a th:href="@{/coordinacion/fichas/{id}(id=${actividad.ficha.id})}">← Volver a la ficha</a>
+    </header>
+    <main>
+        <p class="mensaje" th:if="${mensaje}" th:text="${mensaje}"></p>
+        <p class="error" th:if="${error}" th:text="${error}"></p>
+
+        <h1 th:text="${actividad.nombre}"></h1>
+        <p>
+            RA: <strong th:text="${actividad.resultadoAprendizaje.codigo} + ' - ' + ${actividad.resultadoAprendizaje.descripcion}"></strong>
+            &nbsp;·&nbsp; Ficha <span th:text="${actividad.ficha.numero}"></span>
+            &nbsp;·&nbsp; Fecha límite: <span th:text="${actividad.fechaLimite}"></span>
+        </p>
+
+        <p class="vacio" th:if="${matriculas.empty}">Esta ficha no tiene aprendices matriculados activos.</p>
+
+        <form th:unless="${matriculas.empty}" th:action="@{/coordinacion/actividades/{id}/calificar(id=${actividad.id})}" method="post">
+            <table>
+                <thead><tr><th>Aprendiz</th><th>Calificación</th><th>Juicio</th><th>Retroalimentación</th></tr></thead>
+                <tbody>
+                    <tr th:each="m : ${matriculas}"
+                        th:with="ev=${evaluacionesPorMatricula.get(m.id)}">
+                        <td th:text="${m.aprendiz.usuario.nombreCompleto}"></td>
+                        <td>
+                            <input type="hidden" name="matriculaId" th:value="${m.id}">
+                            <input type="number" name="calificacion" step="0.01" min="0" max="10" style="width:80px;"
+                                   th:value="${ev != null ? ev.calificacion : ''}">
+                        </td>
+                        <td>
+                            <select name="juicio">
+                                <option th:each="j : ${juicios}" th:value="${j}" th:text="${j}"
+                                        th:selected="${ev != null and ev.juicioEvaluacion == j}"></option>
+                            </select>
+                        </td>
+                        <td>
+                            <input type="text" name="retroalimentacion" style="min-width:250px;"
+                                   th:value="${ev != null ? ev.retroalimentacion : ''}">
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="acciones">
+                <button class="btn" type="submit">Guardar calificaciones</button>
+            </div>
+        </form>
+
+        <h2>Evidencias</h2>
+        <p class="vacio" th:if="${matriculas.empty}">Esta ficha no tiene aprendices matriculados activos.</p>
+        <table th:unless="${matriculas.empty}">
+            <thead><tr><th>Aprendiz</th><th>Archivo</th><th>Estado</th><th>Acciones</th></tr></thead>
+            <tbody>
+                <tr th:each="m : ${matriculas}" th:with="ev=${evidenciasPorMatricula.get(m.id)}">
+                    <td th:text="${m.aprendiz.usuario.nombreCompleto}"></td>
+                    <td>
+                        <span th:if="${ev != null}" th:text="${ev.archivo.nombreOriginal}"></span>
+                        <span class="vacio" th:if="${ev == null}">Sin entregar</span>
+                    </td>
+                    <td>
+                        <span th:if="${ev != null}" class="badge" th:text="${ev.estado}"></span>
+                    </td>
+                    <td>
+                        <div th:if="${ev != null}" style="display:flex; gap:0.4rem; align-items:center;">
+                            <a class="btn secundario" th:href="@{/coordinacion/evidencias/{id}/descargar(id=${ev.id})}">Descargar</a>
+                            <form th:action="@{/coordinacion/evidencias/{id}/estado(id=${ev.id})}" method="post" style="display:flex; gap:0.4rem;">
+                                <select name="estado">
+                                    <option th:each="e : ${estadosEvidencia}" th:value="${e}" th:text="${e}" th:selected="${e == ev.estado}"></option>
+                                </select>
+                                <input type="text" name="observacion" placeholder="Observación" th:value="${ev.observacion}">
+                                <button class="btn secundario" type="submit">Actualizar</button>
+                            </form>
+                        </div>
+                        <form th:if="${ev == null}" th:action="@{/coordinacion/actividades/{id}/evidencias(id=${actividad.id})}"
+                              method="post" enctype="multipart/form-data" style="display:flex; gap:0.4rem;">
+                            <input type="hidden" name="matriculaId" th:value="${m.id}">
+                            <input type="file" name="archivo" required>
+                            <button class="btn" type="submit">Recibir evidencia</button>
+                        </form>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <p style="color:#666; font-size:0.85rem;">Tipos permitidos: PDF, imágenes (PNG/JPG), ZIP, Word. Tamaño máximo: 10 MB.</p>
+    </main>
+</body>
+</html>
