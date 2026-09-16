@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Matrículas | Sistema Académico SENA</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+</head>
+<body>
+    <header class="app-header">
+        <strong>SENA | Matrículas</strong>
+        <a th:href="@{/inicio}">← Volver al inicio</a>
+    </header>
+    <main>
+        <h1>Matrículas</h1>
+        <p class="mensaje" th:if="${mensaje}" th:text="${mensaje}"></p>
+        <p class="error" th:if="${error}" th:text="${error}"></p>
+        <p style="color:#666; font-size:0.85rem;">Para matricular un aprendiz, entra al detalle de la ficha correspondiente.</p>
+
+        <p class="vacio" th:if="${matriculas.empty}">No hay matrículas registradas.</p>
+
+        <table th:unless="${matriculas.empty}">
+            <thead><tr><th>Aprendiz</th><th>Ficha</th><th>Programa</th><th>Fecha matrícula</th><th>Estado</th></tr></thead>
+            <tbody>
+                <tr th:each="m : ${matriculas}">
+                    <td th:text="${m.aprendiz.usuario.nombreCompleto}"></td>
+                    <td><a th:href="@{/coordinacion/fichas/{id}(id=${m.ficha.id})}" th:text="${m.ficha.numero}"></a></td>
+                    <td th:text="${m.ficha.programa.codigo}"></td>
+                    <td th:text="${m.fechaMatricula}"></td>
+                    <td><span class="badge" th:text="${m.estado}"></span></td>
+                </tr>
+            </tbody>
+        </table>
+    </main>
+</body>
+</html>

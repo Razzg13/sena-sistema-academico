@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Auditoría | Sistema Académico SENA</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+</head>
+<body>
+    <header class="app-header">
+        <strong>SENA | Auditoría</strong>
+        <a th:href="@{/inicio}">← Volver al inicio</a>
+    </header>
+    <main>
+        <h1>Bitácora de operaciones críticas</h1>
+        <div class="acciones" sec:authorize="hasAnyRole('ADMINISTRADOR', 'COORDINACION_ACADEMICA', 'CONSULTA_AUDITOR')" style="margin-bottom:1rem;">
+            <a class="btn secundario" target="_blank"
+               th:href="@{/reportes/auditoria(usuario=${usuario}, entidad=${entidad}, accion=${accion}, desde=${desde}, hasta=${hasta})}">
+               Exportar a PDF (con los filtros actuales)</a>
+        </div>
+
+        <form class="filtros" th:action="@{/auditoria}" method="get">
+            <div>
+                <label>Usuario</label>
+                <input type="text" name="usuario" th:value="${usuario}" placeholder="correo@sena.edu.co">
+            </div>
+            <div>
+                <label>Entidad</label>
+                <input type="text" name="entidad" th:value="${entidad}" placeholder="Usuario, Programa, Ficha...">
+            </div>
+            <div>
+                <label>Acción</label>
+                <select name="accion">
+                    <option value="">Todas</option>
+                    <option th:each="a : ${acciones}" th:value="${a}" th:text="${a}" th:selected="${a == accion}"></option>
+                </select>
+            </div>
+            <div>
+                <label>Desde</label>
+                <input type="date" name="desde" th:value="${desde}">
+            </div>
+            <div>
+                <label>Hasta</label>
+                <input type="date" name="hasta" th:value="${hasta}">
+            </div>
+            <button class="btn" type="submit">Filtrar</button>
+        </form>
+
+        <p class="vacio" th:if="${registros.empty}">No hay registros para los filtros seleccionados.</p>
+
+        <table th:unless="${registros.empty}">
+            <thead>
+                <tr>
+                    <th>Fecha</th>
+                    <th>Usuario</th>
+                    <th>Acción</th>
+                    <th>Entidad</th>
+                    <th>ID</th>
+                    <th>IP</th>
+                    <th>Detalle</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="r : ${registros.content}">
+                    <td th:text="${#temporals.format(r.fecha, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                    <td th:text="${r.usuario}"></td>
+                    <td><span class="badge" th:classappend="${r.accion}" th:text="${r.accion}"></span></td>
+                    <td th:text="${r.entidad}"></td>
+                    <td th:text="${r.entidadId}"></td>
+                    <td th:text="${r.ipLocal}"></td>
+                    <td th:text="${r.detalle}"></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="paginacion" th:if="${registros.totalPages > 1}">
+            <span th:text="'Página ' + ${registros.number + 1} + ' de ' + ${registros.totalPages}"></span>
+            <a th:if="${registros.hasPrevious()}"
+               th:href="@{/auditoria(usuario=${usuario}, entidad=${entidad}, accion=${accion}, desde=${desde}, hasta=${hasta}, pagina=${registros.number - 1})}">« Anterior</a>
+            <a th:if="${registros.hasNext()}"
+               th:href="@{/auditoria(usuario=${usuario}, entidad=${entidad}, accion=${accion}, desde=${desde}, hasta=${hasta}, pagina=${registros.number + 1})}">Siguiente »</a>
+        </div>
+    </main>
+</body>
+</html>

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Llamado a lista | Sistema Académico SENA</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+</head>
+<body>
+    <header class="app-header">
+        <strong>SENA | Asistencia</strong>
+        <a th:href="@{/coordinacion/fichas/{id}(id=${sesion.ficha.id})}">← Volver a la ficha</a>
+    </header>
+    <main>
+        <p class="mensaje" th:if="${mensaje}" th:text="${mensaje}"></p>
+        <p class="error" th:if="${error}" th:text="${error}"></p>
+
+        <h1 th:text="'Llamado a lista — ' + ${sesion.fecha} + ' (' + ${sesion.horaInicio} + ' - ' + ${sesion.horaFin} + ')'"></h1>
+        <p><strong th:text="${sesion.tema}"></strong> — Ficha <span th:text="${sesion.ficha.numero}"></span></p>
+
+        <p class="vacio" th:if="${matriculas.empty}">Esta ficha no tiene aprendices matriculados activos.</p>
+
+        <form th:unless="${matriculas.empty}" th:action="@{/coordinacion/sesiones/{id}/llamado(id=${sesion.id})}" method="post">
+            <table>
+                <thead><tr><th>Aprendiz</th><th>Estado</th><th>Observación</th></tr></thead>
+                <tbody>
+                    <tr th:each="m : ${matriculas}">
+                        <td th:text="${m.aprendiz.usuario.nombreCompleto}"></td>
+                        <td>
+                            <input type="hidden" name="matriculaId" th:value="${m.id}">
+                            <select name="estado">
+                                <option th:each="e : ${estados}" th:value="${e}" th:text="${e}"
+                                        th:selected="${asistenciasPorMatricula.get(m.id) != null and asistenciasPorMatricula.get(m.id).estado == e}"></option>
+                            </select>
+                        </td>
+                        <td>
+                            <input type="text" name="observacion"
+                                   th:value="${asistenciasPorMatricula.get(m.id) != null ? asistenciasPorMatricula.get(m.id).observacion : ''}">
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="acciones">
+                <button class="btn" type="submit">Guardar asistencia</button>
+            </div>
+        </form>
+    </main>
+</body>
+</html>

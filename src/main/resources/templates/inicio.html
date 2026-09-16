@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Inicio | Sistema Académico SENA</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+</head>
+<body>
+    <header class="app-header">
+        <strong>SENA | Sistema Académico</strong>
+        <form class="logout" th:action="@{/logout}" method="post">
+            <button type="submit">Cerrar sesión</button>
+        </form>
+    </header>
+    <main>
+        <h1>Bienvenido, <span sec:authentication="name">usuario</span></h1>
+        <p>Roles asignados:</p>
+        <span class="badge" sec:authorize="hasRole('ADMINISTRADOR')">Administrador</span>
+        <span class="badge" sec:authorize="hasRole('COORDINACION_ACADEMICA')">Coordinación académica</span>
+        <span class="badge" sec:authorize="hasRole('INSTRUCTOR')">Instructor</span>
+        <span class="badge" sec:authorize="hasRole('APRENDIZ')">Aprendiz</span>
+        <span class="badge" sec:authorize="hasRole('CONSULTA_AUDITOR')">Consulta / Auditor</span>
+
+        <h2>Accesos</h2>
+        <div class="acciones">
+            <a class="btn" sec:authorize="hasAnyRole('ADMINISTRADOR', 'COORDINACION_ACADEMICA')"
+               th:href="@{/coordinacion/programas}">Programas</a>
+            <a class="btn" sec:authorize="hasAnyRole('ADMINISTRADOR', 'COORDINACION_ACADEMICA', 'INSTRUCTOR')"
+               th:href="@{/coordinacion/fichas}"
+               th:text="${#authorization.expression('hasAnyRole(''ADMINISTRADOR'',''COORDINACION_ACADEMICA'')')} ? 'Fichas' : 'Mis fichas'"></a>
+            <a class="btn" sec:authorize="hasRole('APRENDIZ')" th:href="@{/aprendiz/fichas}">Mis fichas</a>
+            <a class="btn" sec:authorize="hasAnyRole('ADMINISTRADOR', 'COORDINACION_ACADEMICA')"
+               th:href="@{/coordinacion/instructores}">Instructores</a>
+            <a class="btn" sec:authorize="hasAnyRole('ADMINISTRADOR', 'COORDINACION_ACADEMICA')"
+               th:href="@{/coordinacion/aprendices}">Aprendices</a>
+            <a class="btn" sec:authorize="hasAnyRole('ADMINISTRADOR', 'COORDINACION_ACADEMICA')"
+               th:href="@{/coordinacion/matriculas}">Matrículas</a>
+            <a class="btn secundario" sec:authorize="hasAnyRole('ADMINISTRADOR', 'CONSULTA_AUDITOR')"
+               th:href="@{/auditoria}">Auditoría</a>
+        </div>
+
+        <p style="margin-top:2rem; color:#555;">Asistencia, Evaluación, Evidencias y Reportes ya
+        están disponibles, pero se usan desde el detalle de cada ficha (sesiones, actividades
+        evaluativas, evidencias y los enlaces de reporte en PDF), no tienen un acceso propio
+        aquí. Todos los módulos funcionales del documento ya están implementados.</p>
+    </main>
+</body>
+</html>

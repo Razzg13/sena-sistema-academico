@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Fichas | Sistema Académico SENA</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+</head>
+<body>
+    <header class="app-header">
+        <strong>SENA | Fichas</strong>
+        <a th:href="@{/inicio}">← Volver al inicio</a>
+    </header>
+    <main>
+        <h1>Fichas</h1>
+        <p class="mensaje" th:if="${mensaje}" th:text="${mensaje}"></p>
+        <p class="error" th:if="${error}" th:text="${error}"></p>
+
+        <div class="acciones" sec:authorize="hasAnyRole('ADMINISTRADOR', 'COORDINACION_ACADEMICA')" style="margin-bottom:1rem;">
+            <a class="btn" th:href="@{/coordinacion/fichas/nuevo}">+ Nueva ficha</a>
+        </div>
+
+        <form class="filtros" sec:authorize="hasAnyRole('ADMINISTRADOR', 'COORDINACION_ACADEMICA')"
+              th:action="@{/coordinacion/fichas}" method="get">
+            <div>
+                <label>Buscar por número</label>
+                <input type="text" name="texto" th:value="${texto}">
+            </div>
+            <button class="btn" type="submit">Buscar</button>
+        </form>
+
+        <p class="vacio" th:if="${fichas.empty}">No hay fichas registradas.</p>
+
+        <table th:unless="${fichas.empty}">
+            <thead>
+                <tr>
+                    <th>Número</th>
+                    <th>Programa</th>
+                    <th>Jornada</th>
+                    <th>Fechas</th>
+                    <th>Ambiente</th>
+                    <th>Estado</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="f : ${fichas.content}">
+                    <td><a th:href="@{/coordinacion/fichas/{id}(id=${f.id})}" th:text="${f.numero}"></a></td>
+                    <td th:text="${f.programa.codigo} + ' - ' + ${f.programa.nombre}"></td>
+                    <td th:text="${f.jornada}"></td>
+                    <td th:text="${f.fechaInicio} + ' a ' + ${f.fechaFin}"></td>
+                    <td th:text="${f.ambiente}"></td>
+                    <td><span class="badge" th:text="${f.estado}"></span></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="paginacion" th:if="${fichas.totalPages > 1}">
+            <span th:text="'Página ' + ${fichas.number + 1} + ' de ' + ${fichas.totalPages}"></span>
+            <a th:if="${fichas.hasPrevious()}"
+               th:href="@{/coordinacion/fichas(texto=${texto}, pagina=${fichas.number - 1})}">« Anterior</a>
+            <a th:if="${fichas.hasNext()}"
+               th:href="@{/coordinacion/fichas(texto=${texto}, pagina=${fichas.number + 1})}">Siguiente »</a>
+        </div>
+    </main>
+</body>
+</html>
