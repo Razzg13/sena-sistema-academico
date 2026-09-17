@@ -13,7 +13,7 @@
         </form>
     </header>
     <main>
-        <h1>Bienvenido, <span sec:authentication="name">usuario</span></h1>
+        <h1>Bienvenido, <span th:text="${nombreCompleto}">usuario</span></h1>
         <p>Roles asignados:</p>
         <span class="badge" sec:authorize="hasRole('ADMINISTRADOR')">Administrador</span>
         <span class="badge" sec:authorize="hasRole('COORDINACION_ACADEMICA')">Coordinación académica</span>
