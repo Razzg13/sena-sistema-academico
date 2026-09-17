@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Usuarios | Sistema Académico SENA</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+</head>
+<body>
+    <header class="app-header">
+        <strong>SENA | Usuarios</strong>
+        <a th:href="@{/inicio}">← Volver al inicio</a>
+    </header>
+    <main>
+        <h1>Usuarios</h1>
+        <p class="mensaje" th:if="${mensaje}" th:text="${mensaje}"></p>
+        <p class="error" th:if="${error}" th:text="${error}"></p>
+
+        <div class="acciones" style="margin-bottom:1rem;">
+            <a class="btn" th:href="@{/admin/usuarios/nuevo}">+ Nuevo usuario</a>
+        </div>
+
+        <p class="vacio" th:if="${usuarios.empty}">No hay usuarios registrados.</p>
+
+        <table th:unless="${usuarios.empty}">
+            <thead><tr><th>Nombre</th><th>Documento</th><th>Correo</th><th>Roles</th><th>Estado</th><th></th></tr></thead>
+            <tbody>
+                <tr th:each="u : ${usuarios}">
+                    <td th:text="${u.nombreCompleto}"></td>
+                    <td th:text="${u.documento}"></td>
+                    <td th:text="${u.correo}"></td>
+                    <td>
+                        <span class="badge" th:each="r : ${u.roles}" th:text="${r}" style="margin-right:0.2rem;"></span>
+                    </td>
+                    <td><span class="badge" th:classappend="${u.estado}" th:text="${u.estado}"></span></td>
+                    <td>
+                        <form th:if="${u.estado.name() == 'ACTIVO'}"
+                              th:action="@{/admin/usuarios/{id}/desactivar(id=${u.id})}" method="post">
+                            <button class="btn peligro" type="submit">Inactivar</button>
+                        </form>
+                        <form th:if="${u.estado.name() == 'INACTIVO'}"
+                              th:action="@{/admin/usuarios/{id}/activar(id=${u.id})}" method="post">
+                            <button class="btn" type="submit">Reactivar</button>
+                        </form>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </main>
+</body>
+</html>
