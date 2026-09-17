@@ -23,6 +23,8 @@
 
         <h2>Accesos</h2>
         <div class="acciones">
+            <a class="btn" sec:authorize="hasRole('ADMINISTRADOR')"
+               th:href="@{/admin/usuarios}">Usuarios</a>
             <a class="btn" sec:authorize="hasAnyRole('ADMINISTRADOR', 'COORDINACION_ACADEMICA')"
                th:href="@{/coordinacion/programas}">Programas</a>
             <a class="btn" sec:authorize="hasAnyRole('ADMINISTRADOR', 'COORDINACION_ACADEMICA', 'INSTRUCTOR')"

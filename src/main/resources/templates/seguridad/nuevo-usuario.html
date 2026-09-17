@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Nuevo usuario | Sistema Académico SENA</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+</head>
+<body>
+    <header class="app-header">
+        <strong>SENA | Usuarios</strong>
+        <a th:href="@{/admin/usuarios}">← Volver al listado</a>
+    </header>
+    <main>
+        <h1>Nuevo usuario</h1>
+
+        <form class="tarjeta" th:action="@{/admin/usuarios}" th:object="${form}" method="post">
+            <div>
+                <label for="documento">Documento</label>
+                <input type="text" id="documento" th:field="*{documento}" required>
+            </div>
+            <div>
+                <label for="nombreCompleto">Nombre completo</label>
+                <input type="text" id="nombreCompleto" th:field="*{nombreCompleto}" required>
+            </div>
+            <div>
+                <label for="correo">Correo</label>
+                <input type="email" id="correo" th:field="*{correo}" required>
+            </div>
+            <div>
+                <label for="clave">Clave inicial</label>
+                <input type="password" id="clave" th:field="*{clave}" minlength="6" required>
+            </div>
+            <div>
+                <label>Roles</label>
+                <div th:each="r : ${roles}" style="display:flex; align-items:center; gap:0.4rem; margin-top:0.3rem;">
+                    <input type="checkbox" th:id="'rol-' + ${r}" name="roles" th:value="${r}">
+                    <label th:for="'rol-' + ${r}" th:text="${r}" style="margin:0;"></label>
+                </div>
+            </div>
+            <button class="btn" type="submit">Crear usuario</button>
+        </form>
+    </main>
+</body>
+</html>
