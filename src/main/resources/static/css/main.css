@@ -4,6 +4,8 @@
 body { font-family: Arial, sans-serif; margin: 0; color: #222; background: #fff; }
 
 header.app-header { background: var(--verde); color: #fff; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
+header.app-header strong { display: flex; align-items: center; gap: 0.8rem; font-size: 1.05rem; }
+header.app-header strong::before { content: ""; width: 46px; height: 46px; flex-shrink: 0; background: #fff url('../img/logo-sena.svg') center / 78% no-repeat; border-radius: 10px; box-shadow: 0 1px 4px rgba(0,0,0,0.25); }
 header.app-header a { color: #fff; font-weight: bold; text-decoration: none; }
 header.app-header form.logout button { background: none; border: 1px solid #fff; color: #fff; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; }
 
