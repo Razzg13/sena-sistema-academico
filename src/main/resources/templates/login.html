@@ -7,7 +7,8 @@
     <style>
         body { background: var(--verde-claro); display: flex; align-items: center; justify-content: center; height: 100vh; }
         .caja { border-top: 5px solid var(--verde); background: #fff; padding: 2rem 2.5rem; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); width: 320px; }
-        .caja h1 { text-align: center; margin-bottom: 1.5rem; }
+        .caja .logo { display: block; width: 110px; margin: 0 auto 0.8rem; }
+        .caja h1 { text-align: center; margin-top: 0; margin-bottom: 1.5rem; }
         .caja form { display: flex; flex-direction: column; gap: 1rem; }
         .caja button { margin-top: 0.5rem; }
         .caja p { text-align: center; font-size: 0.85rem; }
@@ -15,6 +16,7 @@
 </head>
 <body>
     <div class="caja">
+        <img class="logo" th:src="@{/img/logo-sena.svg}" alt="Logo SENA">
         <h1>Sistema Académico SENA</h1>
         <form th:action="@{/login}" method="post">
             <div>
