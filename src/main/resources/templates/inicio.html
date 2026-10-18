@@ -9,7 +9,6 @@
     <div th:replace="~{fragments/layout :: barra}"></div>
 
     <div class="contenedor">
-        <div th:replace="~{fragments/layout :: banner}"></div>
         <div class="tarjeta">
             <h2>Bienvenido(a), <span th:text="${usuario.nombreCompleto}"></span></h2>
             <p>Rol: <strong th:text="${usuario.rol}"></strong></p>
