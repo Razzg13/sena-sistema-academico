@@ -62,5 +62,10 @@
             </form>
         </div>
     </aside>
+
+    <div th:fragment="banner" class="banner-modulo" th:if="${imagenModulo}">
+        <img th:src="@{${imagenModulo}}" alt="Sede SENA"/>
+        <span class="banner-modulo-texto">Servicio Nacional de Aprendizaje - SENA</span>
+    </div>
 </body>
 </html>
