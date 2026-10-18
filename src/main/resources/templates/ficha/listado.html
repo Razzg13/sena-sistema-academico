@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Fichas - Sistema Academico CIPA</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}"/>
+</head>
+<body>
+    <div th:replace="~{fragments/layout :: barra}"></div>
+
+    <div class="contenedor">
+        <div class="mensaje-exito" th:if="${mensaje}" th:text="${mensaje}"></div>
+
+        <div class="encabezado-seccion">
+            <h2>Fichas</h2>
+            <a class="boton" th:href="@{/fichas/nuevo}">+ Nueva ficha</a>
+        </div>
+
+        <div class="tarjeta">
+            <table>
+                <thead>
+                <tr>
+                    <th>Numero</th>
+                    <th>Programa</th>
+                    <th>Jornada</th>
+                    <th>Inicio</th>
+                    <th>Fin</th>
+                    <th>Ambiente</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="ficha : ${fichas}">
+                    <td th:text="${ficha.numero}"></td>
+                    <td th:text="${ficha.programa.nombre}"></td>
+                    <td th:text="${ficha.jornada}"></td>
+                    <td th:text="${ficha.fechaInicio}"></td>
+                    <td th:text="${ficha.fechaFin}"></td>
+                    <td th:text="${ficha.ambiente}"></td>
+                    <td th:text="${ficha.estado}"></td>
+                    <td class="acciones-tabla">
+                        <a th:href="@{/fichas/{id}/editar(id=${ficha.id})}">Editar</a>
+                        <form th:action="@{/fichas/{id}/eliminar(id=${ficha.id})}" method="post" style="display:inline">
+                            <button type="submit" class="boton peligro" onclick="return confirm('¿Eliminar esta ficha?')">Eliminar</button>
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

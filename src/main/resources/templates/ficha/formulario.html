@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Ficha - Sistema Academico CIPA</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}"/>
+</head>
+<body>
+    <div th:replace="~{fragments/layout :: barra}"></div>
+
+    <div class="contenedor">
+        <div class="tarjeta" style="max-width:500px;margin:0 auto;">
+            <h2 th:text="${ficha.id == null} ? 'Nueva ficha' : 'Editar ficha'"></h2>
+            <form th:action="@{/fichas/guardar}" th:object="${ficha}" method="post">
+                <input type="hidden" th:field="*{id}"/>
+
+                <div class="campo">
+                    <label>Numero</label>
+                    <input type="text" th:field="*{numero}" required/>
+                </div>
+                <div class="campo">
+                    <label>Programa</label>
+                    <select th:field="*{programa}" required>
+                        <option th:each="p : ${programas}" th:value="${p.id}" th:text="${p.nombre}"></option>
+                    </select>
+                </div>
+                <div class="campo">
+                    <label>Jornada</label>
+                    <select th:field="*{jornada}" required>
+                        <option th:each="j : ${jornadas}" th:value="${j}" th:text="${j}"></option>
+                    </select>
+                </div>
+                <div class="campo">
+                    <label>Fecha inicio</label>
+                    <input type="date" th:field="*{fechaInicio}" required/>
+                </div>
+                <div class="campo">
+                    <label>Fecha fin</label>
+                    <input type="date" th:field="*{fechaFin}" required/>
+                </div>
+                <div class="campo">
+                    <label>Ambiente</label>
+                    <input type="text" th:field="*{ambiente}" required/>
+                </div>
+                <div class="campo" th:if="${ficha.id != null}">
+                    <label>Estado</label>
+                    <select th:field="*{estado}">
+                        <option th:each="e : ${estados}" th:value="${e}" th:text="${e}"></option>
+                    </select>
+                </div>
+
+                <button type="submit" class="boton ancho-completo">Guardar</button>
+                <a th:href="@{/fichas}" class="boton secundario ancho-completo" style="margin-top:0.5rem;display:block;text-align:center;">Cancelar</a>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

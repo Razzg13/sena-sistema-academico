@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Instructor - Sistema Academico CIPA</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}"/>
+</head>
+<body>
+    <div th:replace="~{fragments/layout :: barra}"></div>
+
+    <div class="contenedor">
+        <div class="mensaje-exito" th:if="${mensaje}" th:text="${mensaje}"></div>
+
+        <div class="tarjeta">
+            <h2 th:text="${instructor.usuario.nombreCompleto}"></h2>
+            <p>Correo: <span th:text="${instructor.usuario.correo}"></span></p>
+            <p>Especialidad: <span th:text="${instructor.especialidad}"></span></p>
+        </div>
+
+        <div class="tarjeta">
+            <h3>Fichas asignadas</h3>
+            <table>
+                <thead>
+                <tr>
+                    <th>Ficha</th>
+                    <th>Desde</th>
+                    <th>Hasta</th>
+                    <th>Acciones</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="asignacion : ${asignaciones}">
+                    <td th:text="${asignacion.ficha.numero}"></td>
+                    <td th:text="${asignacion.fechaInicio}"></td>
+                    <td th:text="${asignacion.fechaFin}"></td>
+                    <td class="acciones-tabla">
+                        <form th:action="@{/instructores/asignaciones/{id}/eliminar(id=${asignacion.id})}" method="post" style="display:inline">
+                            <button type="submit" class="boton peligro" onclick="return confirm('¿Quitar esta asignacion?')">Quitar</button>
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+            <h4>Asignar a una ficha</h4>
+            <form th:action="@{/instructores/{id}/asignaciones(id=${instructor.id})}" th:object="${nuevaAsignacion}" method="post">
+                <div class="campo">
+                    <label>Ficha</label>
+                    <select th:field="*{ficha}" required>
+                        <option th:each="f : ${fichas}" th:value="${f.id}" th:text="${f.numero}"></option>
+                    </select>
+                </div>
+                <div class="campo">
+                    <label>Fecha inicio</label>
+                    <input type="date" th:field="*{fechaInicio}" required/>
+                </div>
+                <div class="campo">
+                    <label>Fecha fin</label>
+                    <input type="date" th:field="*{fechaFin}" required/>
+                </div>
+                <button type="submit" class="boton">Asignar</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

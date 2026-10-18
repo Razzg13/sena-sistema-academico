@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Usuarios - Sistema Academico CIPA</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}"/>
+</head>
+<body>
+    <div th:replace="~{fragments/layout :: barra}"></div>
+
+    <div class="contenedor">
+        <div class="mensaje-exito" th:if="${mensaje}" th:text="${mensaje}"></div>
+
+        <div class="encabezado-seccion">
+            <h2>Usuarios</h2>
+            <a class="boton" th:href="@{/usuarios/nuevo}">+ Nuevo usuario</a>
+        </div>
+
+        <div class="tarjeta">
+            <table>
+                <thead>
+                <tr>
+                    <th>Documento</th>
+                    <th>Nombre</th>
+                    <th>Correo</th>
+                    <th>Rol</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="usuario : ${usuarios}">
+                    <td th:text="${usuario.documento}"></td>
+                    <td th:text="${usuario.nombreCompleto}"></td>
+                    <td th:text="${usuario.correo}"></td>
+                    <td th:text="${usuario.rol}"></td>
+                    <td th:text="${usuario.estado}"></td>
+                    <td class="acciones-tabla">
+                        <form th:action="@{/usuarios/{id}/eliminar(id=${usuario.id})}" method="post" style="display:inline">
+                            <button type="submit" class="boton peligro" onclick="return confirm('¿Eliminar este usuario?')">Eliminar</button>
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

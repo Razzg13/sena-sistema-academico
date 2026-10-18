@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Programas - Sistema Academico CIPA</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}"/>
+</head>
+<body>
+    <div th:replace="~{fragments/layout :: barra}"></div>
+
+    <div class="contenedor">
+        <div class="mensaje-exito" th:if="${mensaje}" th:text="${mensaje}"></div>
+
+        <div class="encabezado-seccion">
+            <h2>Programas de formacion</h2>
+            <a class="boton" th:href="@{/programas/nuevo}">+ Nuevo programa</a>
+        </div>
+
+        <div class="tarjeta">
+            <table>
+                <thead>
+                <tr>
+                    <th>Codigo</th>
+                    <th>Nombre</th>
+                    <th>Nivel</th>
+                    <th>Version</th>
+                    <th>Horas</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="programa : ${programas}">
+                    <td th:text="${programa.codigo}"></td>
+                    <td th:text="${programa.nombre}"></td>
+                    <td th:text="${programa.nivel}"></td>
+                    <td th:text="${programa.version}"></td>
+                    <td th:text="${programa.duracionHoras}"></td>
+                    <td>
+                        <span th:class="'etiqueta ' + (${programa.estado.name() == 'ACTIVO'} ? 'activo' : 'inactivo')"
+                              th:text="${programa.estado}"></span>
+                    </td>
+                    <td class="acciones-tabla">
+                        <a th:href="@{/programas/{id}/editar(id=${programa.id})}">Editar</a>
+                        <form th:action="@{/programas/{id}/eliminar(id=${programa.id})}" method="post" style="display:inline">
+                            <button type="submit" class="boton peligro" onclick="return confirm('¿Eliminar este programa?')">Eliminar</button>
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Inicio - Sistema Academico CIPA</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}"/>
+</head>
+<body>
+    <div th:replace="~{fragments/layout :: barra}"></div>
+
+    <div class="contenedor">
+        <div class="tarjeta">
+            <h2>Bienvenido(a), <span th:text="${usuario.nombreCompleto}"></span></h2>
+            <p>Rol: <strong th:text="${usuario.rol}"></strong></p>
+        </div>
+
+        <div class="tarjetas-menu">
+            <a class="tarjeta-menu" th:href="@{/programas}" sec:authorize="hasAnyRole('ADMINISTRADOR','COORDINACION_ACADEMICA')">
+                <h3>Programas</h3>
+                <p>Catalogo de programas de formacion.</p>
+            </a>
+            <a class="tarjeta-menu" th:href="@{/fichas}" sec:authorize="hasAnyRole('ADMINISTRADOR','COORDINACION_ACADEMICA')">
+                <h3>Fichas</h3>
+                <p>Grupos de aprendices por programa.</p>
+            </a>
+            <a class="tarjeta-menu" th:href="@{/instructores}" sec:authorize="hasAnyRole('ADMINISTRADOR','COORDINACION_ACADEMICA')">
+                <h3>Instructores</h3>
+                <p>Instructores y sus asignaciones a fichas.</p>
+            </a>
+            <a class="tarjeta-menu" th:href="@{/aprendices}" sec:authorize="hasAnyRole('ADMINISTRADOR','COORDINACION_ACADEMICA')">
+                <h3>Aprendices</h3>
+                <p>Aprendices y sus matriculas.</p>
+            </a>
+            <a class="tarjeta-menu" th:href="@{/sesiones}" sec:authorize="hasAnyRole('ADMINISTRADOR','COORDINACION_ACADEMICA','INSTRUCTOR')">
+                <h3>Sesiones y asistencia</h3>
+                <p>Clases dictadas y control de asistencia.</p>
+            </a>
+            <a class="tarjeta-menu" th:href="@{/actividades}" sec:authorize="hasAnyRole('ADMINISTRADOR','COORDINACION_ACADEMICA','INSTRUCTOR')">
+                <h3>Actividades y evaluaciones</h3>
+                <p>Actividades evaluativas y calificaciones.</p>
+            </a>
+            <a class="tarjeta-menu" th:href="@{/usuarios}" sec:authorize="hasRole('ADMINISTRADOR')">
+                <h3>Usuarios</h3>
+                <p>Cuentas de acceso al sistema.</p>
+            </a>
+        </div>
+    </div>
+</body>
+</html>

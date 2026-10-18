@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Tomar asistencia - Sistema Academico CIPA</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}"/>
+</head>
+<body>
+    <div th:replace="~{fragments/layout :: barra}"></div>
+
+    <div class="contenedor">
+        <div class="tarjeta">
+            <h2>Asistencia - Ficha <span th:text="${sesion.ficha.numero}"></span></h2>
+            <p th:text="${sesion.fecha} + ' · ' + ${sesion.tema}"></p>
+
+            <form th:action="@{/sesiones/{id}/llamado(id=${sesion.id})}" th:object="${form}" method="post">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Aprendiz</th>
+                        <th>Estado</th>
+                        <th>Observacion</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="item, iter : *{items}">
+                        <td th:text="${item.nombreAprendiz}"></td>
+                        <td>
+                            <input type="hidden" th:field="*{items[__${iter.index}__].matriculaId}"/>
+                            <select th:field="*{items[__${iter.index}__].estado}">
+                                <option th:each="e : ${estados}" th:value="${e}" th:text="${e}"></option>
+                            </select>
+                        </td>
+                        <td>
+                            <input type="text" th:field="*{items[__${iter.index}__].observacion}"/>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <p th:if="${form.items.isEmpty()}">Esta ficha no tiene aprendices matriculados.</p>
+                <button type="submit" class="boton" th:unless="${form.items.isEmpty()}">Guardar asistencia</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
