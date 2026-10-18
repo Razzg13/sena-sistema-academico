@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <link rel="icon" th:href="@{/favicon.ico}"/>
+    <title>Mis fichas - Sistema Academico SENA</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}"/>
+</head>
+<body>
+    <div th:replace="~{fragments/layout :: barra}"></div>
+
+    <div class="contenedor">
+        <div class="encabezado-seccion">
+            <h2>Mis fichas</h2>
+        </div>
+
+        <div class="tarjeta" th:if="${sinPerfil}">
+            <p>Tu cuenta todavia no tiene un perfil de instructor asociado. Contacta al administrador o a
+                coordinacion academica para que lo cree.</p>
+        </div>
+
+        <div th:unless="${sinPerfil}">
+            <div class="tarjeta">
+                <h2 th:text="${instructor.usuario.nombreCompleto}"></h2>
+                <p>Correo: <span th:text="${instructor.usuario.correo}"></span></p>
+                <p>Especialidad: <span th:text="${instructor.especialidad}"></span></p>
+            </div>
+
+            <p th:if="${resumenes.isEmpty()}">Todavia no tienes fichas asignadas.</p>
+
+            <div class="tarjeta" th:each="resumen : ${resumenes}">
+                <div class="encabezado-seccion">
+                    <h3 th:text="'Ficha ' + ${resumen.asignacion.ficha.numero} + ' - ' + ${resumen.asignacion.ficha.programa.nombre}"></h3>
+                    <span th:text="${resumen.aprendicesMatriculados} + ' aprendiz(ces) matriculado(s)'"></span>
+                </div>
+                <p>
+                    Jornada: <strong th:text="${resumen.asignacion.ficha.jornada}"></strong>
+                    &nbsp;|&nbsp; Asignacion: <strong th:text="${resumen.asignacion.fechaInicio}"></strong>
+                    a <strong th:text="${resumen.asignacion.fechaFin}"></strong>
+                </p>
+
+                <h4>Sesiones</h4>
+                <table th:if="${!resumen.sesiones.isEmpty()}">
+                    <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Tema</th>
+                        <th>Acciones</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="sesion : ${resumen.sesiones}">
+                        <td th:text="${sesion.fecha}"></td>
+                        <td th:text="${sesion.tema}"></td>
+                        <td class="acciones-tabla">
+                            <a th:href="@{/sesiones/{id}/llamado(id=${sesion.id})}">Tomar asistencia</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <p th:if="${resumen.sesiones.isEmpty()}">Todavia no hay sesiones registradas para esta ficha.</p>
+
+                <h4>Actividades evaluativas</h4>
+                <table th:if="${!resumen.actividades.isEmpty()}">
+                    <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Fecha limite</th>
+                        <th>Acciones</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="actividad : ${resumen.actividades}">
+                        <td th:text="${actividad.nombre}"></td>
+                        <td th:text="${actividad.fechaLimite}"></td>
+                        <td class="acciones-tabla">
+                            <a th:href="@{/actividades/{id}/calificar(id=${actividad.id})}">Calificar</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <p th:if="${resumen.actividades.isEmpty()}">Todavia no hay actividades evaluativas para esta ficha.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
