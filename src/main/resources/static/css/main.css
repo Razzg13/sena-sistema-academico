@@ -247,7 +247,11 @@ h1, h2, h3, h4 {
     justify-content: center;
     background:
         radial-gradient(circle at 15% 15%, rgba(255, 255, 255, 0.08), transparent 45%),
-        linear-gradient(160deg, var(--sena-verde-oscuro) 0%, var(--sena-verde) 85%);
+        linear-gradient(160deg, rgba(6, 28, 20, 0.88) 0%, rgba(14, 73, 45, 0.82) 85%),
+        url("/img/campus_sena.webp");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
     padding: 1.5rem;
 }
 
