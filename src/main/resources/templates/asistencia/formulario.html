@@ -10,9 +10,12 @@
     <div th:replace="~{fragments/layout :: barra}"></div>
 
     <div class="contenedor">
+        <div class="mensaje-exito" th:if="${mensaje}" th:text="${mensaje}"></div>
+        <div class="mensaje-error" th:if="${error}" th:text="${error}"></div>
         <div class="tarjeta" style="max-width:500px;margin:0 auto;">
             <h2>Nueva sesion de formacion</h2>
-            <form th:action="@{/sesiones/guardar}" th:object="${sesion}" method="post">
+            <p th:if="${fichas.isEmpty()}">No tienes fichas en ejecucion donde registrar sesiones.</p>
+            <form th:action="@{/sesiones/guardar}" th:object="${sesion}" method="post" th:unless="${fichas.isEmpty()}">
                 <div class="campo">
                     <label>Ficha</label>
                     <select th:field="*{ficha}" required>

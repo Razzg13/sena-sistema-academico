@@ -10,6 +10,8 @@
     <div th:replace="~{fragments/layout :: barra}"></div>
 
     <div class="contenedor">
+        <div class="mensaje-exito" th:if="${mensaje}" th:text="${mensaje}"></div>
+        <div class="mensaje-error" th:if="${error}" th:text="${error}"></div>
         <div class="encabezado-seccion">
             <h2>Panel de auditoria</h2>
         </div>

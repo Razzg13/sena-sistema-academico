@@ -10,6 +10,8 @@
     <div th:replace="~{fragments/layout :: barra}"></div>
 
     <div class="contenedor">
+        <div class="mensaje-exito" th:if="${mensaje}" th:text="${mensaje}"></div>
+        <div class="mensaje-error" th:if="${error}" th:text="${error}"></div>
         <div class="encabezado-seccion">
             <h2>Mi informacion</h2>
         </div>
@@ -63,6 +65,7 @@
                 <p th:if="${resumen.asistencias.isEmpty()}">Todavia no se han registrado sesiones para esta ficha.</p>
 
                 <h4>Calificaciones</h4>
+                <p class="texto-ayuda">Para entregar tus actividades ve a <a th:href="@{/mis-actividades}">Mis actividades</a>.</p>
                 <table th:if="${!resumen.evaluaciones.isEmpty()}">
                     <thead>
                     <tr>

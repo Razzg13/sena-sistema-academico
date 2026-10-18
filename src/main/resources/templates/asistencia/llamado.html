@@ -10,6 +10,8 @@
     <div th:replace="~{fragments/layout :: barra}"></div>
 
     <div class="contenedor">
+        <div class="mensaje-exito" th:if="${mensaje}" th:text="${mensaje}"></div>
+        <div class="mensaje-error" th:if="${error}" th:text="${error}"></div>
         <div class="tarjeta">
             <h2>Asistencia - Ficha <span th:text="${sesion.ficha.numero}"></span></h2>
             <p th:text="${sesion.fecha} + ' · ' + ${sesion.tema}"></p>

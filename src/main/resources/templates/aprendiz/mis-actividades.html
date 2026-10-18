@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <link rel="icon" th:href="@{/favicon.ico}"/>
+    <title>Mis actividades - Sistema Academico SENA</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}"/>
+</head>
+<body>
+    <div th:replace="~{fragments/layout :: barra}"></div>
+
+    <div class="contenedor">
+        <div class="mensaje-exito" th:if="${mensaje}" th:text="${mensaje}"></div>
+        <div class="mensaje-error" th:if="${error}" th:text="${error}"></div>
+
+        <div class="encabezado-seccion">
+            <h2>Mis actividades</h2>
+        </div>
+
+        <div class="tarjeta" th:if="${sinPerfil}">
+            <p>Tu cuenta todavia no tiene un perfil de aprendiz asociado. Contacta al administrador o a coordinacion
+                academica para que lo cree.</p>
+        </div>
+
+        <div th:unless="${sinPerfil}">
+            <p class="texto-ayuda" th:if="${!filas.isEmpty()}">
+                Estas son las actividades que tus instructores asignaron a tus fichas activas.
+                Tienes <strong th:text="${pendientes}"></strong> pendiente(s) por entregar.
+            </p>
+
+            <div class="tarjeta">
+                <p th:if="${filas.isEmpty()}">Todavia no tienes actividades asignadas. Cuando un instructor asigne una a tu ficha aparecera aqui.</p>
+                <table th:if="${!filas.isEmpty()}">
+                    <thead>
+                    <tr>
+                        <th>Actividad</th>
+                        <th>Ficha</th>
+                        <th>Fecha limite</th>
+                        <th>Estado</th>
+                        <th>Calificacion</th>
+                        <th>Acciones</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="fila : ${filas}">
+                        <td th:text="${fila.actividad.nombre}"></td>
+                        <td th:text="${fila.actividad.ficha.numero}"></td>
+                        <td th:text="${fila.actividad.fechaLimite}"></td>
+                        <td><span th:class="'etiqueta ' + ${fila.estado.claseCss}" th:text="${fila.estado.etiqueta}"></span></td>
+                        <td th:text="${fila.evaluacion != null and fila.evaluacion.calificacion != null} ? ${fila.evaluacion.calificacion} : '-'"></td>
+                        <td class="acciones-tabla">
+                            <a th:href="@{/mis-actividades/{id}(id=${fila.actividad.id})}"
+                               th:text="${fila.estado.name() == 'PENDIENTE' or fila.estado.name() == 'VENCIDA'} ? 'Entregar' : 'Ver detalle'"></a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

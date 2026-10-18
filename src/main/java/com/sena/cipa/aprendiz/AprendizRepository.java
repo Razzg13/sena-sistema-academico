@@ -9,4 +9,6 @@ public interface AprendizRepository extends JpaRepository<Aprendiz, Long> {
     boolean existsByUsuarioId(Long usuarioId);
 
     Optional<Aprendiz> findByUsuarioId(Long usuarioId);
+
+    long countByEstadoFormativo(EstadoFormativo estadoFormativo);
 }

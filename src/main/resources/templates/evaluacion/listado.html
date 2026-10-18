@@ -18,27 +18,34 @@
             <a class="boton" th:href="@{/actividades/nuevo}">+ Nueva actividad</a>
         </div>
 
+        <p class="texto-ayuda" th:if="${soloMisFichas}">Solo se muestran las actividades de las fichas que tienes asignadas.</p>
+
         <div class="tarjeta">
-            <table>
+            <table th:if="${!filas.isEmpty()}">
                 <thead>
                 <tr>
                     <th>Ficha</th>
-                    <th>Nombre</th>
+                    <th>Actividad</th>
                     <th>Fecha limite</th>
+                    <th>Entregas</th>
+                    <th>Calificadas</th>
                     <th>Acciones</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="actividad : ${actividades}">
-                    <td th:text="${actividad.ficha.numero}"></td>
-                    <td th:text="${actividad.nombre}"></td>
-                    <td th:text="${actividad.fechaLimite}"></td>
+                <tr th:each="fila : ${filas}">
+                    <td th:text="${fila.actividad.ficha.numero}"></td>
+                    <td th:text="${fila.actividad.nombre}"></td>
+                    <td th:text="${fila.actividad.fechaLimite}"></td>
+                    <td th:text="${fila.entregas} + ' / ' + ${fila.matriculados}"></td>
+                    <td th:text="${fila.calificadas} + ' / ' + ${fila.matriculados}"></td>
                     <td class="acciones-tabla">
-                        <a th:href="@{/actividades/{id}/calificar(id=${actividad.id})}">Calificar</a>
+                        <a th:href="@{/actividades/{id}/calificar(id=${fila.actividad.id})}">Calificar</a>
                     </td>
                 </tr>
                 </tbody>
             </table>
+            <p th:if="${filas.isEmpty()}">Todavia no hay actividades para mostrar.</p>
         </div>
     </div>
 </body>

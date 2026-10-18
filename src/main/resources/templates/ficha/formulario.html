@@ -10,6 +10,8 @@
     <div th:replace="~{fragments/layout :: barra}"></div>
 
     <div class="contenedor">
+        <div class="mensaje-exito" th:if="${mensaje}" th:text="${mensaje}"></div>
+        <div class="mensaje-error" th:if="${error}" th:text="${error}"></div>
         <div class="tarjeta" style="max-width:500px;margin:0 auto;">
             <h2 th:text="${ficha.id == null} ? 'Nueva ficha' : 'Editar ficha'"></h2>
             <form th:action="@{/fichas/guardar}" th:object="${ficha}" method="post">
