@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Nueva sesion - Sistema Academico CIPA</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}"/>
+</head>
+<body>
+    <div th:replace="~{fragments/layout :: barra}"></div>
+
+    <div class="contenedor">
+        <div class="tarjeta" style="max-width:500px;margin:0 auto;">
+            <h2>Nueva sesion de formacion</h2>
+            <form th:action="@{/sesiones/guardar}" th:object="${sesion}" method="post">
+                <div class="campo">
+                    <label>Ficha</label>
+                    <select th:field="*{ficha}" required>
+                        <option th:each="f : ${fichas}" th:value="${f.id}" th:text="${f.numero}"></option>
+                    </select>
+                </div>
+                <div class="campo">
+                    <label>Fecha</label>
+                    <input type="date" th:field="*{fecha}" required/>
+                </div>
+                <div class="campo">
+                    <label>Hora inicio</label>
+                    <input type="time" th:field="*{horaInicio}" required/>
+                </div>
+                <div class="campo">
+                    <label>Hora fin</label>
+                    <input type="time" th:field="*{horaFin}" required/>
+                </div>
+                <div class="campo">
+                    <label>Tema</label>
+                    <input type="text" th:field="*{tema}" required/>
+                </div>
+
+                <button type="submit" class="boton ancho-completo">Guardar</button>
+                <a th:href="@{/sesiones}" class="boton secundario ancho-completo" style="margin-top:0.5rem;display:block;text-align:center;">Cancelar</a>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

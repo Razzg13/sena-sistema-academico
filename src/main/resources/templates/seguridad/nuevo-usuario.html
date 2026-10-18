@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Nuevo usuario - Sistema Academico CIPA</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}"/>
+</head>
+<body>
+    <div th:replace="~{fragments/layout :: barra}"></div>
+
+    <div class="contenedor">
+        <div class="tarjeta" style="max-width:500px;margin:0 auto;">
+            <h2>Nuevo usuario</h2>
+            <form th:action="@{/usuarios/guardar}" th:object="${form}" method="post">
+                <div class="campo">
+                    <label>Documento</label>
+                    <input type="text" th:field="*{documento}" required/>
+                </div>
+                <div class="campo">
+                    <label>Nombre completo</label>
+                    <input type="text" th:field="*{nombreCompleto}" required/>
+                </div>
+                <div class="campo">
+                    <label>Correo</label>
+                    <input type="email" th:field="*{correo}" required/>
+                    <small style="color:#c0392b" th:if="${#fields.hasErrors('correo')}" th:errors="*{correo}"></small>
+                </div>
+                <div class="campo">
+                    <label>Telefono</label>
+                    <input type="text" th:field="*{telefono}"/>
+                </div>
+                <div class="campo">
+                    <label>Clave</label>
+                    <input type="password" th:field="*{clave}" required/>
+                    <small style="color:#c0392b" th:if="${#fields.hasErrors('clave')}" th:errors="*{clave}"></small>
+                </div>
+                <div class="campo">
+                    <label>Rol</label>
+                    <select th:field="*{rol}" required>
+                        <option th:each="r : ${roles}" th:value="${r}" th:text="${r}"></option>
+                    </select>
+                </div>
+
+                <button type="submit" class="boton ancho-completo">Guardar</button>
+                <a th:href="@{/usuarios}" class="boton secundario ancho-completo" style="margin-top:0.5rem;display:block;text-align:center;">Cancelar</a>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

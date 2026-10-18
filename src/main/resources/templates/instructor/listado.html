@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Instructores - Sistema Academico CIPA</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}"/>
+</head>
+<body>
+    <div th:replace="~{fragments/layout :: barra}"></div>
+
+    <div class="contenedor">
+        <div class="mensaje-exito" th:if="${mensaje}" th:text="${mensaje}"></div>
+
+        <div class="encabezado-seccion">
+            <h2>Instructores</h2>
+            <a class="boton" th:href="@{/instructores/nuevo}">+ Nuevo instructor</a>
+        </div>
+
+        <div class="tarjeta">
+            <table>
+                <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Correo</th>
+                    <th>Especialidad</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="instructor : ${instructores}">
+                    <td th:text="${instructor.usuario.nombreCompleto}"></td>
+                    <td th:text="${instructor.usuario.correo}"></td>
+                    <td th:text="${instructor.especialidad}"></td>
+                    <td th:text="${instructor.estado}"></td>
+                    <td class="acciones-tabla">
+                        <a th:href="@{/instructores/{id}(id=${instructor.id})}">Ver asignaciones</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

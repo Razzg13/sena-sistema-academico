@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Calificar - Sistema Academico CIPA</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}"/>
+</head>
+<body>
+    <div th:replace="~{fragments/layout :: barra}"></div>
+
+    <div class="contenedor">
+        <div class="tarjeta">
+            <h2 th:text="${actividad.nombre}"></h2>
+            <p th:text="'Ficha ' + ${actividad.ficha.numero} + ' · Fecha limite: ' + ${actividad.fechaLimite}"></p>
+
+            <form th:action="@{/actividades/{id}/calificar(id=${actividad.id})}" th:object="${form}" method="post">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Aprendiz</th>
+                        <th>Calificacion</th>
+                        <th>Juicio</th>
+                        <th>Retroalimentacion</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="item, iter : *{items}">
+                        <td th:text="${item.nombreAprendiz}"></td>
+                        <td>
+                            <input type="hidden" th:field="*{items[__${iter.index}__].matriculaId}"/>
+                            <input type="number" step="0.01" min="0" max="5"
+                                   th:field="*{items[__${iter.index}__].calificacion}"/>
+                        </td>
+                        <td>
+                            <select th:field="*{items[__${iter.index}__].juicio}">
+                                <option th:each="j : ${juicios}" th:value="${j}" th:text="${j}"></option>
+                            </select>
+                        </td>
+                        <td>
+                            <input type="text" th:field="*{items[__${iter.index}__].retroalimentacion}"/>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <p th:if="${form.items.isEmpty()}">Esta ficha no tiene aprendices matriculados.</p>
+                <button type="submit" class="boton" th:unless="${form.items.isEmpty()}">Guardar calificaciones</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Aprendices - Sistema Academico CIPA</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}"/>
+</head>
+<body>
+    <div th:replace="~{fragments/layout :: barra}"></div>
+
+    <div class="contenedor">
+        <div class="mensaje-exito" th:if="${mensaje}" th:text="${mensaje}"></div>
+
+        <div class="encabezado-seccion">
+            <h2>Aprendices</h2>
+            <a class="boton" th:href="@{/aprendices/nuevo}">+ Nuevo aprendiz</a>
+        </div>
+
+        <div class="tarjeta">
+            <table>
+                <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Correo</th>
+                    <th>Estado formativo</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="aprendiz : ${aprendices}">
+                    <td th:text="${aprendiz.usuario.nombreCompleto}"></td>
+                    <td th:text="${aprendiz.usuario.correo}"></td>
+                    <td th:text="${aprendiz.estadoFormativo}"></td>
+                    <td th:text="${aprendiz.estado}"></td>
+                    <td class="acciones-tabla">
+                        <a th:href="@{/aprendices/{id}(id=${aprendiz.id})}">Ver matriculas</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>
