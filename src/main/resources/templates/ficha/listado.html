@@ -39,7 +39,10 @@
                     <td th:text="${ficha.fechaInicio}"></td>
                     <td th:text="${ficha.fechaFin}"></td>
                     <td th:text="${ficha.ambiente}"></td>
-                    <td th:text="${ficha.estado}"></td>
+                    <td>
+                        <span th:class="'etiqueta estado-' + ${#strings.toLowerCase(ficha.estado.name())}"
+                              th:text="${ficha.estado}"></span>
+                    </td>
                     <td class="acciones-tabla">
                         <a th:href="@{/fichas/{id}/editar(id=${ficha.id})}">Editar</a>
                         <form th:action="@{/fichas/{id}/eliminar(id=${ficha.id})}" method="post" style="display:inline">
