@@ -44,6 +44,10 @@
                 <h3>Usuarios</h3>
                 <p>Cuentas de acceso al sistema.</p>
             </a>
+            <a class="tarjeta-menu" th:href="@{/mis-datos}" sec:authorize="hasRole('APRENDIZ')">
+                <h3>Mi informacion</h3>
+                <p>Tu ficha, tu asistencia y tus calificaciones.</p>
+            </a>
         </div>
     </div>
 </body>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <link rel="icon" th:href="@{/favicon.ico}"/>
+    <title>Mi informacion - Sistema Academico SENA</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}"/>
+</head>
+<body>
+    <div th:replace="~{fragments/layout :: barra}"></div>
+
+    <div class="contenedor">
+        <div class="encabezado-seccion">
+            <h2>Mi informacion</h2>
+        </div>
+
+        <div class="tarjeta" th:if="${sinPerfil}">
+            <p>Tu cuenta todavia no tiene un perfil de aprendiz asociado. Contacta al administrador o a coordinacion
+                academica para que lo cree.</p>
+        </div>
+
+        <div th:unless="${sinPerfil}">
+            <div class="tarjeta">
+                <h2 th:text="${aprendiz.usuario.nombreCompleto}"></h2>
+                <p>Correo: <span th:text="${aprendiz.usuario.correo}"></span></p>
+                <p>Estado formativo: <span th:text="${aprendiz.estadoFormativo}"></span></p>
+            </div>
+
+            <p th:if="${resumenes.isEmpty()}">No tienes matriculas registradas todavia.</p>
+
+            <div class="tarjeta" th:each="resumen : ${resumenes}">
+                <h3 th:text="'Ficha ' + ${resumen.matricula.ficha.numero} + ' - ' + ${resumen.matricula.ficha.programa.nombre}"></h3>
+                <p>
+                    Jornada: <strong th:text="${resumen.matricula.ficha.jornada}"></strong>
+                    &nbsp;|&nbsp; Matricula: <strong th:text="${resumen.matricula.estado}"></strong>
+                    &nbsp;|&nbsp; Desde: <strong th:text="${resumen.matricula.fechaMatricula}"></strong>
+                </p>
+
+                <h4>Asistencia</h4>
+                <table th:if="${!resumen.asistencias.isEmpty()}">
+                    <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Tema</th>
+                        <th>Estado</th>
+                        <th>Observacion</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="item : ${resumen.asistencias}">
+                        <td th:text="${item.sesion.fecha}"></td>
+                        <td th:text="${item.sesion.tema}"></td>
+                        <td>
+                            <span th:if="${item.asistencia != null}"
+                                  th:class="'etiqueta estado-' + ${#strings.toLowerCase(item.asistencia.estado.name())}"
+                                  th:text="${item.asistencia.estado}"></span>
+                            <span th:if="${item.asistencia == null}" class="etiqueta inactivo">Sin registrar</span>
+                        </td>
+                        <td th:text="${item.asistencia != null} ? ${item.asistencia.observacion} : ''"></td>
+                    </tr>
+                    </tbody>
+                </table>
+                <p th:if="${resumen.asistencias.isEmpty()}">Todavia no se han registrado sesiones para esta ficha.</p>
+
+                <h4>Calificaciones</h4>
+                <table th:if="${!resumen.evaluaciones.isEmpty()}">
+                    <thead>
+                    <tr>
+                        <th>Actividad</th>
+                        <th>Fecha limite</th>
+                        <th>Calificacion</th>
+                        <th>Juicio</th>
+                        <th>Retroalimentacion</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="item : ${resumen.evaluaciones}">
+                        <td th:text="${item.actividad.nombre}"></td>
+                        <td th:text="${item.actividad.fechaLimite}"></td>
+                        <td th:text="${item.evaluacion != null} ? ${item.evaluacion.calificacion} : 'Pendiente'"></td>
+                        <td>
+                            <span th:if="${item.evaluacion != null}"
+                                  th:class="'etiqueta estado-' + ${#strings.toLowerCase(item.evaluacion.juicio.name())}"
+                                  th:text="${item.evaluacion.juicio}"></span>
+                            <span th:if="${item.evaluacion == null}" class="etiqueta inactivo">Pendiente</span>
+                        </td>
+                        <td th:text="${item.evaluacion != null} ? ${item.evaluacion.retroalimentacion} : ''"></td>
+                    </tr>
+                    </tbody>
+                </table>
+                <p th:if="${resumen.evaluaciones.isEmpty()}">Todavia no hay actividades evaluativas para esta ficha.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

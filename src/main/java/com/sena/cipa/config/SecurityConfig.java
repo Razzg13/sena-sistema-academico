@@ -29,6 +29,7 @@ public class SecurityConfig {
                         .requestMatchers("/sesiones/**", "/asistencias/**",
                                 "/actividades/**", "/evaluaciones/**")
                         .hasAnyRole("ADMINISTRADOR", "COORDINACION_ACADEMICA", "INSTRUCTOR")
+                        .requestMatchers("/mis-datos/**").hasRole("APRENDIZ")
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
