@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <link rel="icon" th:href="@{/favicon.ico}"/>
+    <title>Auditoria - Sistema Academico SENA</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}"/>
+</head>
+<body>
+    <div th:replace="~{fragments/layout :: barra}"></div>
+
+    <div class="contenedor">
+        <div class="encabezado-seccion">
+            <h2>Panel de auditoria</h2>
+        </div>
+
+        <div class="tarjetas-menu">
+            <div class="tarjeta-menu">
+                <h3 th:text="${totalProgramas}"></h3>
+                <p>Programas de formacion</p>
+            </div>
+            <div class="tarjeta-menu">
+                <h3 th:text="${totalFichas}"></h3>
+                <p>Fichas</p>
+            </div>
+            <div class="tarjeta-menu">
+                <h3 th:text="${totalAprendices}"></h3>
+                <p>Aprendices</p>
+            </div>
+            <div class="tarjeta-menu">
+                <h3 th:text="${totalInstructores}"></h3>
+                <p>Instructores</p>
+            </div>
+        </div>
+
+        <div class="tarjeta" style="margin-top:1.25rem;">
+            <h3 style="margin-top:0;">Fichas</h3>
+            <table>
+                <thead>
+                <tr>
+                    <th>Numero</th>
+                    <th>Programa</th>
+                    <th>Jornada</th>
+                    <th>Estado</th>
+                    <th>Matriculados</th>
+                    <th>Instructor(es)</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="resumen : ${fichas}">
+                    <td th:text="${resumen.ficha.numero}"></td>
+                    <td th:text="${resumen.ficha.programa.nombre}"></td>
+                    <td th:text="${resumen.ficha.jornada}"></td>
+                    <td>
+                        <span th:class="'etiqueta estado-' + ${#strings.toLowerCase(resumen.ficha.estado.name())}"
+                              th:text="${resumen.ficha.estado}"></span>
+                    </td>
+                    <td th:text="${resumen.matriculados}"></td>
+                    <td th:text="${resumen.instructores}"></td>
+                </tr>
+                </tbody>
+            </table>
+            <p th:if="${fichas.isEmpty()}">Todavia no hay fichas registradas.</p>
+        </div>
+    </div>
+</body>
+</html>

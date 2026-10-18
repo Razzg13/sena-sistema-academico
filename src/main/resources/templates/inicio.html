@@ -32,6 +32,10 @@
                 <h3>Aprendices</h3>
                 <p>Aprendices y sus matriculas.</p>
             </a>
+            <a class="tarjeta-menu" th:href="@{/mis-fichas}" sec:authorize="hasRole('INSTRUCTOR')">
+                <h3>Mis fichas</h3>
+                <p>Las fichas que tienes asignadas, con asistencia y calificaciones.</p>
+            </a>
             <a class="tarjeta-menu" th:href="@{/sesiones}" sec:authorize="hasAnyRole('ADMINISTRADOR','COORDINACION_ACADEMICA','INSTRUCTOR')">
                 <h3>Sesiones y asistencia</h3>
                 <p>Clases dictadas y control de asistencia.</p>
@@ -47,6 +51,10 @@
             <a class="tarjeta-menu" th:href="@{/mis-datos}" sec:authorize="hasRole('APRENDIZ')">
                 <h3>Mi informacion</h3>
                 <p>Tu ficha, tu asistencia y tus calificaciones.</p>
+            </a>
+            <a class="tarjeta-menu" th:href="@{/auditoria}" sec:authorize="hasRole('CONSULTA_AUDITOR')">
+                <h3>Auditoria</h3>
+                <p>Panel de solo lectura: fichas, matriculas e instructores asignados.</p>
             </a>
         </div>
     </div>

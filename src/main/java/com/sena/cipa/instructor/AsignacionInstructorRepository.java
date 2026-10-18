@@ -7,4 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface AsignacionInstructorRepository extends JpaRepository<AsignacionInstructor, Long> {
 
     List<AsignacionInstructor> findByInstructorId(Long instructorId);
+
+    List<AsignacionInstructor> findByFichaId(Long fichaId);
 }
