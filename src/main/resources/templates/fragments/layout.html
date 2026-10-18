@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<body>
+    <div th:fragment="barra" class="barra-superior">
+        <div class="marca">
+            <img th:src="@{/img/logo_sena_blanco.png}" alt="Logo SENA"/>
+            <strong>Sistema Academico CIPA</strong>
+        </div>
+        <nav>
+            <a th:href="@{/inicio}">Inicio</a>
+            <a th:href="@{/programas}" sec:authorize="hasAnyRole('ADMINISTRADOR','COORDINACION_ACADEMICA')">Programas</a>
+            <a th:href="@{/fichas}" sec:authorize="hasAnyRole('ADMINISTRADOR','COORDINACION_ACADEMICA')">Fichas</a>
+            <a th:href="@{/instructores}" sec:authorize="hasAnyRole('ADMINISTRADOR','COORDINACION_ACADEMICA')">Instructores</a>
+            <a th:href="@{/aprendices}" sec:authorize="hasAnyRole('ADMINISTRADOR','COORDINACION_ACADEMICA')">Aprendices</a>
+            <a th:href="@{/sesiones}" sec:authorize="hasAnyRole('ADMINISTRADOR','COORDINACION_ACADEMICA','INSTRUCTOR')">Sesiones</a>
+            <a th:href="@{/actividades}" sec:authorize="hasAnyRole('ADMINISTRADOR','COORDINACION_ACADEMICA','INSTRUCTOR')">Evaluaciones</a>
+            <a th:href="@{/usuarios}" sec:authorize="hasRole('ADMINISTRADOR')">Usuarios</a>
+            <form th:action="@{/logout}" method="post" style="display:inline">
+                <button type="submit" style="background:none;border:none;color:white;cursor:pointer;margin-left:1rem;text-decoration:underline;">Salir</button>
+            </form>
+        </nav>
+    </div>
+</body>
+</html>

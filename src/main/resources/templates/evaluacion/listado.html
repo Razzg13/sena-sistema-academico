@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Actividades evaluativas - Sistema Academico CIPA</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}"/>
+</head>
+<body>
+    <div th:replace="~{fragments/layout :: barra}"></div>
+
+    <div class="contenedor">
+        <div class="mensaje-exito" th:if="${mensaje}" th:text="${mensaje}"></div>
+
+        <div class="encabezado-seccion">
+            <h2>Actividades evaluativas</h2>
+            <a class="boton" th:href="@{/actividades/nuevo}">+ Nueva actividad</a>
+        </div>
+
+        <div class="tarjeta">
+            <table>
+                <thead>
+                <tr>
+                    <th>Ficha</th>
+                    <th>Nombre</th>
+                    <th>Fecha limite</th>
+                    <th>Acciones</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="actividad : ${actividades}">
+                    <td th:text="${actividad.ficha.numero}"></td>
+                    <td th:text="${actividad.nombre}"></td>
+                    <td th:text="${actividad.fechaLimite}"></td>
+                    <td class="acciones-tabla">
+                        <a th:href="@{/actividades/{id}/calificar(id=${actividad.id})}">Calificar</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

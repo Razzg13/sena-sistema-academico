@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Nueva actividad evaluativa - Sistema Academico CIPA</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}"/>
+</head>
+<body>
+    <div th:replace="~{fragments/layout :: barra}"></div>
+
+    <div class="contenedor">
+        <div class="tarjeta" style="max-width:500px;margin:0 auto;">
+            <h2>Nueva actividad evaluativa</h2>
+            <form th:action="@{/actividades/guardar}" th:object="${actividad}" method="post">
+                <div class="campo">
+                    <label>Ficha</label>
+                    <select th:field="*{ficha}" required>
+                        <option th:each="f : ${fichas}" th:value="${f.id}" th:text="${f.numero}"></option>
+                    </select>
+                </div>
+                <div class="campo">
+                    <label>Nombre</label>
+                    <input type="text" th:field="*{nombre}" required/>
+                </div>
+                <div class="campo">
+                    <label>Descripcion</label>
+                    <textarea th:field="*{descripcion}" rows="3"></textarea>
+                </div>
+                <div class="campo">
+                    <label>Fecha limite</label>
+                    <input type="date" th:field="*{fechaLimite}" required/>
+                </div>
+
+                <button type="submit" class="boton ancho-completo">Guardar</button>
+                <a th:href="@{/actividades}" class="boton secundario ancho-completo" style="margin-top:0.5rem;display:block;text-align:center;">Cancelar</a>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Programa - Sistema Academico CIPA</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}"/>
+</head>
+<body>
+    <div th:replace="~{fragments/layout :: barra}"></div>
+
+    <div class="contenedor">
+        <div class="tarjeta" style="max-width:500px;margin:0 auto;">
+            <h2 th:text="${programa.id == null} ? 'Nuevo programa' : 'Editar programa'"></h2>
+            <form th:action="@{/programas/guardar}" th:object="${programa}" method="post">
+                <input type="hidden" th:field="*{id}"/>
+
+                <div class="campo">
+                    <label>Codigo</label>
+                    <input type="text" th:field="*{codigo}" required/>
+                </div>
+                <div class="campo">
+                    <label>Nombre</label>
+                    <input type="text" th:field="*{nombre}" required/>
+                </div>
+                <div class="campo">
+                    <label>Nivel</label>
+                    <select th:field="*{nivel}" required>
+                        <option th:each="n : ${niveles}" th:value="${n}" th:text="${n}"></option>
+                    </select>
+                </div>
+                <div class="campo">
+                    <label>Version</label>
+                    <input type="text" th:field="*{version}" required/>
+                </div>
+                <div class="campo">
+                    <label>Duracion (horas)</label>
+                    <input type="number" th:field="*{duracionHoras}" required/>
+                </div>
+                <div class="campo" th:if="${programa.id != null}">
+                    <label>Estado</label>
+                    <select th:field="*{estado}">
+                        <option value="ACTIVO">ACTIVO</option>
+                        <option value="INACTIVO">INACTIVO</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="boton ancho-completo">Guardar</button>
+                <a th:href="@{/programas}" class="boton secundario ancho-completo" style="margin-top:0.5rem;display:block;text-align:center;">Cancelar</a>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
