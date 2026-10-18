@@ -10,6 +10,8 @@
     <div th:replace="~{fragments/layout :: barra}"></div>
 
     <div class="contenedor">
+        <div class="mensaje-exito" th:if="${mensaje}" th:text="${mensaje}"></div>
+        <div class="mensaje-error" th:if="${error}" th:text="${error}"></div>
         <div class="encabezado-seccion">
             <h2>Mis fichas</h2>
         </div>
@@ -39,6 +41,11 @@
                     a <strong th:text="${resumen.asignacion.fechaFin}"></strong>
                 </p>
 
+                <div class="acciones-ficha">
+                    <a class="boton" th:href="@{/sesiones/nuevo(ficha=${resumen.asignacion.ficha.id})}">+ Nueva sesion</a>
+                    <a class="boton" th:href="@{/actividades/nuevo(ficha=${resumen.asignacion.ficha.id})}">+ Nueva actividad</a>
+                </div>
+
                 <h4>Sesiones</h4>
                 <table th:if="${!resumen.sesiones.isEmpty()}">
                     <thead>
@@ -66,15 +73,24 @@
                     <tr>
                         <th>Nombre</th>
                         <th>Fecha limite</th>
+                        <th>Estado</th>
+                        <th>Entregas</th>
+                        <th>Calificadas</th>
                         <th>Acciones</th>
                     </tr>
                     </thead>
                     <tbody>
-                    <tr th:each="actividad : ${resumen.actividades}">
-                        <td th:text="${actividad.nombre}"></td>
-                        <td th:text="${actividad.fechaLimite}"></td>
+                    <tr th:each="fila : ${resumen.actividades}">
+                        <td th:text="${fila.actividad.nombre}"></td>
+                        <td th:text="${fila.actividad.fechaLimite}"></td>
+                        <td>
+                            <span th:class="'etiqueta ' + (${fila.vigente} ? 'estado-activa' : 'estado-excusado')"
+                                  th:text="${fila.vigente} ? 'Vigente' : 'Finalizada'"></span>
+                        </td>
+                        <td th:text="${fila.entregas} + ' / ' + ${resumen.aprendicesMatriculados}"></td>
+                        <td th:text="${fila.calificadas} + ' / ' + ${resumen.aprendicesMatriculados}"></td>
                         <td class="acciones-tabla">
-                            <a th:href="@{/actividades/{id}/calificar(id=${actividad.id})}">Calificar</a>
+                            <a th:href="@{/actividades/{id}/calificar(id=${fila.actividad.id})}">Calificar</a>
                         </td>
                     </tr>
                     </tbody>

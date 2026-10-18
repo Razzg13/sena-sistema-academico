@@ -1,5 +1,6 @@
 package com.sena.cipa.asistencia;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -10,4 +11,8 @@ public interface AsistenciaRepository extends JpaRepository<Asistencia, Long> {
     List<Asistencia> findBySesionId(Long sesionId);
 
     Optional<Asistencia> findBySesionIdAndMatriculaId(Long sesionId, Long matriculaId);
+
+    List<Asistencia> findByMatriculaIdIn(Collection<Long> matriculaIds);
+
+    List<Asistencia> findBySesionFichaIdIn(Collection<Long> fichaIds);
 }

@@ -18,8 +18,11 @@
             <a class="boton" th:href="@{/sesiones/nuevo}">+ Nueva sesion</a>
         </div>
 
+        <p class="texto-ayuda" th:if="${soloMisFichas}">Solo se muestran las sesiones de las fichas que tienes asignadas.</p>
+
         <div class="tarjeta">
-            <table>
+            <p th:if="${sesiones.isEmpty()}">Todavia no hay sesiones para mostrar.</p>
+            <table th:if="${!sesiones.isEmpty()}">
                 <thead>
                 <tr>
                     <th>Ficha</th>

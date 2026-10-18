@@ -1,6 +1,7 @@
 package com.sena.cipa.instructor;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -13,6 +14,10 @@ import com.sena.cipa.asistencia.SesionFormacion;
 import com.sena.cipa.asistencia.SesionFormacionRepository;
 import com.sena.cipa.evaluacion.ActividadEvaluativa;
 import com.sena.cipa.evaluacion.ActividadEvaluativaRepository;
+import com.sena.cipa.common.Fechas;
+import com.sena.cipa.entrega.EntregaRepository;
+import com.sena.cipa.evaluacion.EvaluacionRepository;
+import com.sena.cipa.matricula.EstadoMatricula;
 import com.sena.cipa.matricula.MatriculaRepository;
 import com.sena.cipa.seguridad.UsuarioPrincipal;
 
@@ -25,21 +30,30 @@ public class AutogestionInstructorController {
     private final MatriculaRepository matriculaRepository;
     private final SesionFormacionRepository sesionRepository;
     private final ActividadEvaluativaRepository actividadRepository;
+    private final EntregaRepository entregaRepository;
+    private final EvaluacionRepository evaluacionRepository;
 
     public AutogestionInstructorController(InstructorRepository instructorRepository,
                                             AsignacionInstructorRepository asignacionRepository,
                                             MatriculaRepository matriculaRepository,
                                             SesionFormacionRepository sesionRepository,
-                                            ActividadEvaluativaRepository actividadRepository) {
+                                            ActividadEvaluativaRepository actividadRepository,
+                                            EntregaRepository entregaRepository,
+                                            EvaluacionRepository evaluacionRepository) {
         this.instructorRepository = instructorRepository;
         this.asignacionRepository = asignacionRepository;
         this.matriculaRepository = matriculaRepository;
         this.sesionRepository = sesionRepository;
         this.actividadRepository = actividadRepository;
+        this.entregaRepository = entregaRepository;
+        this.evaluacionRepository = evaluacionRepository;
     }
 
     public record ResumenFicha(AsignacionInstructor asignacion, int aprendicesMatriculados,
-                                List<SesionFormacion> sesiones, List<ActividadEvaluativa> actividades) {
+                                List<SesionFormacion> sesiones, List<FilaActividad> actividades) {
+    }
+
+    public record FilaActividad(ActividadEvaluativa actividad, int entregas, int calificadas, boolean vigente) {
     }
 
     @GetMapping
@@ -56,9 +70,17 @@ public class AutogestionInstructorController {
         List<ResumenFicha> resumenes = new ArrayList<>();
         for (AsignacionInstructor asignacion : asignaciones) {
             Long fichaId = asignacion.getFicha().getId();
-            int matriculados = matriculaRepository.findByFichaId(fichaId).size();
-            List<SesionFormacion> sesiones = sesionRepository.findByFichaId(fichaId);
-            List<ActividadEvaluativa> actividades = actividadRepository.findByFichaId(fichaId);
+            int matriculados = matriculaRepository.findByFichaIdAndEstado(fichaId, EstadoMatricula.ACTIVA).size();
+            List<SesionFormacion> sesiones = sesionRepository.findByFichaId(fichaId).stream()
+                    .sorted(Comparator.comparing(SesionFormacion::getFecha).reversed())
+                    .toList();
+            List<FilaActividad> actividades = actividadRepository.findByFichaId(fichaId).stream()
+                    .sorted(Comparator.comparing(ActividadEvaluativa::getFechaLimite).reversed())
+                    .map(a -> new FilaActividad(a, entregaRepository.findByActividadId(a.getId()).size(),
+                            (int) evaluacionRepository.findByActividadId(a.getId()).stream()
+                                    .filter(e -> e.getCalificacion() != null).count(),
+                            !a.getFechaLimite().isBefore(Fechas.hoy())))
+                    .toList();
             resumenes.add(new ResumenFicha(asignacion, matriculados, sesiones, actividades));
         }
 

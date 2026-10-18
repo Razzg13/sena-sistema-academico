@@ -29,7 +29,7 @@ public class SecurityConfig {
                         .requestMatchers("/sesiones/**", "/asistencias/**",
                                 "/actividades/**", "/evaluaciones/**")
                         .hasAnyRole("ADMINISTRADOR", "COORDINACION_ACADEMICA", "INSTRUCTOR")
-                        .requestMatchers("/mis-datos/**").hasRole("APRENDIZ")
+                        .requestMatchers("/mis-datos/**", "/mis-actividades/**").hasRole("APRENDIZ")
                         .requestMatchers("/mis-fichas/**").hasRole("INSTRUCTOR")
                         .requestMatchers("/auditoria/**").hasRole("CONSULTA_AUDITOR")
                         .anyRequest().authenticated()

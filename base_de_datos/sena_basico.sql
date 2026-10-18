@@ -131,6 +131,26 @@ CREATE TABLE evaluaciones (
     CONSTRAINT uq_evaluaciones_actividad_matricula UNIQUE (actividad_id, matricula_id)
 );
 
+CREATE TABLE entregas (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    actividad_id BIGINT NOT NULL,
+    matricula_id BIGINT NOT NULL,
+    comentario VARCHAR(1000),
+    nombre_archivo VARCHAR(255),
+    tipo_contenido VARCHAR(150),
+    tamano_bytes BIGINT,
+    fecha_entrega DATETIME(6) NOT NULL,
+    CONSTRAINT fk_entregas_actividad FOREIGN KEY (actividad_id) REFERENCES actividades_evaluativas(id),
+    CONSTRAINT fk_entregas_matricula FOREIGN KEY (matricula_id) REFERENCES matriculas(id),
+    CONSTRAINT uq_entregas_actividad_matricula UNIQUE (actividad_id, matricula_id)
+);
+
+CREATE TABLE entrega_archivos (
+    entrega_id BIGINT PRIMARY KEY,
+    contenido LONGBLOB NOT NULL,
+    CONSTRAINT fk_entrega_archivos_entrega FOREIGN KEY (entrega_id) REFERENCES entregas(id)
+);
+
 -- ============================================================
 -- Datos de ejemplo (pocos, para ver la base funcionando)
 -- ============================================================
