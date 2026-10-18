@@ -8,7 +8,8 @@
 <body>
     <div th:replace="~{fragments/layout :: barra}"></div>
 
-    <div class="contenedor" th:style="'background-image:url(' + @{${imagenModulo}} + ')'">
+    <div class="contenedor">
+        <div th:replace="~{fragments/layout :: banner}"></div>
         <div class="mensaje-exito" th:if="${mensaje}" th:text="${mensaje}"></div>
         <div class="mensaje-error" th:if="${error}" th:text="${error}"></div>
 
