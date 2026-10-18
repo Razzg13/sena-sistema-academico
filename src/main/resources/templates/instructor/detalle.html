@@ -9,6 +9,7 @@
     <div th:replace="~{fragments/layout :: barra}"></div>
 
     <div class="contenedor">
+        <div th:replace="~{fragments/layout :: banner}"></div>
         <div class="mensaje-exito" th:if="${mensaje}" th:text="${mensaje}"></div>
         <div class="mensaje-error" th:if="${error}" th:text="${error}"></div>
 
