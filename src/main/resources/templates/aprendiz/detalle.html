@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Aprendiz - Sistema Academico CIPA</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}"/>
+</head>
+<body>
+    <div th:replace="~{fragments/layout :: barra}"></div>
+
+    <div class="contenedor">
+        <div class="mensaje-exito" th:if="${mensaje}" th:text="${mensaje}"></div>
+
+        <div class="tarjeta">
+            <h2 th:text="${aprendiz.usuario.nombreCompleto}"></h2>
+            <p>Correo: <span th:text="${aprendiz.usuario.correo}"></span></p>
+            <p>Estado formativo: <span th:text="${aprendiz.estadoFormativo}"></span></p>
+        </div>
+
+        <div class="tarjeta">
+            <h3>Matriculas</h3>
+            <table>
+                <thead>
+                <tr>
+                    <th>Ficha</th>
+                    <th>Fecha matricula</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="matricula : ${matriculas}">
+                    <td th:text="${matricula.ficha.numero}"></td>
+                    <td th:text="${matricula.fechaMatricula}"></td>
+                    <td th:text="${matricula.estado}"></td>
+                    <td class="acciones-tabla">
+                        <form th:action="@{/aprendices/matriculas/{id}/eliminar(id=${matricula.id})}" method="post" style="display:inline">
+                            <button type="submit" class="boton peligro" onclick="return confirm('¿Eliminar esta matricula?')">Eliminar</button>
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+            <h4>Matricular en una ficha</h4>
+            <form th:action="@{/aprendices/{id}/matriculas(id=${aprendiz.id})}" th:object="${nuevaMatricula}" method="post">
+                <div class="campo">
+                    <label>Ficha</label>
+                    <select th:field="*{ficha}" required>
+                        <option th:each="f : ${fichas}" th:value="${f.id}" th:text="${f.numero}"></option>
+                    </select>
+                </div>
+                <div class="campo">
+                    <label>Fecha matricula</label>
+                    <input type="date" th:field="*{fechaMatricula}" required/>
+                </div>
+                <button type="submit" class="boton">Matricular</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

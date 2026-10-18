@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Instructor - Sistema Academico CIPA</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}"/>
+</head>
+<body>
+    <div th:replace="~{fragments/layout :: barra}"></div>
+
+    <div class="contenedor">
+        <div class="tarjeta" style="max-width:500px;margin:0 auto;">
+            <h2>Nuevo instructor</h2>
+            <p th:if="${usuarios.isEmpty()}">No hay usuarios con rol INSTRUCTOR disponibles. Crea primero la cuenta en <a th:href="@{/usuarios/nuevo}">Usuarios</a>.</p>
+            <form th:action="@{/instructores/guardar}" th:object="${instructor}" method="post" th:unless="${usuarios.isEmpty()}">
+                <div class="campo">
+                    <label>Usuario (cuenta con rol INSTRUCTOR)</label>
+                    <select th:field="*{usuario}" required>
+                        <option th:each="u : ${usuarios}" th:value="${u.id}" th:text="${u.nombreCompleto} + ' - ' + ${u.correo}"></option>
+                    </select>
+                </div>
+                <div class="campo">
+                    <label>Especialidad</label>
+                    <input type="text" th:field="*{especialidad}" required/>
+                </div>
+
+                <button type="submit" class="boton ancho-completo">Guardar</button>
+                <a th:href="@{/instructores}" class="boton secundario ancho-completo" style="margin-top:0.5rem;display:block;text-align:center;">Cancelar</a>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

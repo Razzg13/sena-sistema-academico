@@ -1,46 +1,45 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Instructores | Sistema Académico SENA</title>
-    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <meta charset="UTF-8"/>
+    <title>Instructores - Sistema Academico CIPA</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}"/>
 </head>
 <body>
-    <header class="app-header">
-        <strong>SENA | Instructores</strong>
-        <a th:href="@{/inicio}">← Volver al inicio</a>
-    </header>
-    <main>
-        <h1>Instructores</h1>
-        <p class="mensaje" th:if="${mensaje}" th:text="${mensaje}"></p>
-        <p class="error" th:if="${error}" th:text="${error}"></p>
+    <div th:replace="~{fragments/layout :: barra}"></div>
 
-        <p class="vacio" th:if="${instructores.empty}">No hay instructores registrados.</p>
+    <div class="contenedor">
+        <div class="mensaje-exito" th:if="${mensaje}" th:text="${mensaje}"></div>
 
-        <table th:unless="${instructores.empty}">
-            <thead><tr><th>Nombre</th><th>Correo</th><th>Especialidad</th></tr></thead>
-            <tbody>
-                <tr th:each="i : ${instructores}">
-                    <td th:text="${i.usuario.nombreCompleto}"></td>
-                    <td th:text="${i.usuario.correo}"></td>
-                    <td th:text="${i.especialidad}"></td>
+        <div class="encabezado-seccion">
+            <h2>Instructores</h2>
+            <a class="boton" th:href="@{/instructores/nuevo}">+ Nuevo instructor</a>
+        </div>
+
+        <div class="tarjeta">
+            <table>
+                <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Correo</th>
+                    <th>Especialidad</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
                 </tr>
-            </tbody>
-        </table>
-
-        <h2>Crear perfil de instructor</h2>
-        <p style="color:#666; font-size:0.85rem;">El usuario debe existir previamente y tener el rol INSTRUCTOR asignado.</p>
-        <form class="tarjeta" th:action="@{/coordinacion/instructores}" method="post">
-            <div>
-                <label for="correo">Correo del usuario</label>
-                <input type="email" id="correo" name="correo" required>
-            </div>
-            <div>
-                <label for="especialidad">Especialidad</label>
-                <input type="text" id="especialidad" name="especialidad" required>
-            </div>
-            <button class="btn" type="submit">Crear</button>
-        </form>
-    </main>
+                </thead>
+                <tbody>
+                <tr th:each="instructor : ${instructores}">
+                    <td th:text="${instructor.usuario.nombreCompleto}"></td>
+                    <td th:text="${instructor.usuario.correo}"></td>
+                    <td th:text="${instructor.especialidad}"></td>
+                    <td th:text="${instructor.estado}"></td>
+                    <td class="acciones-tabla">
+                        <a th:href="@{/instructores/{id}(id=${instructor.id})}">Ver asignaciones</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 </body>
 </html>

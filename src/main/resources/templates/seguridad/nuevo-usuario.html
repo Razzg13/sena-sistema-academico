@@ -1,44 +1,50 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Nuevo usuario | Sistema Académico SENA</title>
-    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <meta charset="UTF-8"/>
+    <title>Nuevo usuario - Sistema Academico CIPA</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}"/>
 </head>
 <body>
-    <header class="app-header">
-        <strong>SENA | Usuarios</strong>
-        <a th:href="@{/admin/usuarios}">← Volver al listado</a>
-    </header>
-    <main>
-        <h1>Nuevo usuario</h1>
+    <div th:replace="~{fragments/layout :: barra}"></div>
 
-        <form class="tarjeta" th:action="@{/admin/usuarios}" th:object="${form}" method="post">
-            <div>
-                <label for="documento">Documento</label>
-                <input type="text" id="documento" th:field="*{documento}" required>
-            </div>
-            <div>
-                <label for="nombreCompleto">Nombre completo</label>
-                <input type="text" id="nombreCompleto" th:field="*{nombreCompleto}" required>
-            </div>
-            <div>
-                <label for="correo">Correo</label>
-                <input type="email" id="correo" th:field="*{correo}" required>
-            </div>
-            <div>
-                <label for="clave">Clave inicial</label>
-                <input type="password" id="clave" th:field="*{clave}" minlength="6" required>
-            </div>
-            <div>
-                <label>Roles</label>
-                <div th:each="r : ${roles}" style="display:flex; align-items:center; gap:0.4rem; margin-top:0.3rem;">
-                    <input type="checkbox" th:id="'rol-' + ${r}" name="roles" th:value="${r}">
-                    <label th:for="'rol-' + ${r}" th:text="${r}" style="margin:0;"></label>
+    <div class="contenedor">
+        <div class="tarjeta" style="max-width:500px;margin:0 auto;">
+            <h2>Nuevo usuario</h2>
+            <form th:action="@{/usuarios/guardar}" th:object="${form}" method="post">
+                <div class="campo">
+                    <label>Documento</label>
+                    <input type="text" th:field="*{documento}" required/>
                 </div>
-            </div>
-            <button class="btn" type="submit">Crear usuario</button>
-        </form>
-    </main>
+                <div class="campo">
+                    <label>Nombre completo</label>
+                    <input type="text" th:field="*{nombreCompleto}" required/>
+                </div>
+                <div class="campo">
+                    <label>Correo</label>
+                    <input type="email" th:field="*{correo}" required/>
+                    <small style="color:#c0392b" th:if="${#fields.hasErrors('correo')}" th:errors="*{correo}"></small>
+                </div>
+                <div class="campo">
+                    <label>Telefono</label>
+                    <input type="text" th:field="*{telefono}"/>
+                </div>
+                <div class="campo">
+                    <label>Clave</label>
+                    <input type="password" th:field="*{clave}" required/>
+                    <small style="color:#c0392b" th:if="${#fields.hasErrors('clave')}" th:errors="*{clave}"></small>
+                </div>
+                <div class="campo">
+                    <label>Rol</label>
+                    <select th:field="*{rol}" required>
+                        <option th:each="r : ${roles}" th:value="${r}" th:text="${r}"></option>
+                    </select>
+                </div>
+
+                <button type="submit" class="boton ancho-completo">Guardar</button>
+                <a th:href="@{/usuarios}" class="boton secundario ancho-completo" style="margin-top:0.5rem;display:block;text-align:center;">Cancelar</a>
+            </form>
+        </div>
+    </div>
 </body>
 </html>
