@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <link rel="icon" th:href="@{/favicon.ico}"/>
+    <title>Actividad - Sistema Academico SENA</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}"/>
+</head>
+<body>
+    <div th:replace="~{fragments/layout :: barra}"></div>
+
+    <div class="contenedor">
+        <div class="mensaje-exito" th:if="${mensaje}" th:text="${mensaje}"></div>
+        <div class="mensaje-error" th:if="${error}" th:text="${error}"></div>
+
+        <div class="encabezado-seccion">
+            <h2 th:text="${fila.actividad.nombre}"></h2>
+            <a class="boton secundario" th:href="@{/mis-actividades}">Volver a mis actividades</a>
+        </div>
+
+        <div class="tarjeta">
+            <p>
+                Ficha <strong th:text="${fila.actividad.ficha.numero}"></strong>
+                &nbsp;|&nbsp; Fecha limite: <strong th:text="${fila.actividad.fechaLimite}"></strong>
+                &nbsp;|&nbsp; Estado:
+                <span th:class="'etiqueta ' + ${fila.estado.claseCss}" th:text="${fila.estado.etiqueta}"></span>
+            </p>
+            <p th:if="${fila.actividad.descripcion != null and !fila.actividad.descripcion.isBlank()}"
+               th:text="${fila.actividad.descripcion}"></p>
+            <p class="texto-ayuda" th:if="${fila.estado.name() == 'VENCIDA'}">
+                La fecha limite ya paso. Aun puedes entregar, pero quedara marcada como tardia.
+            </p>
+        </div>
+
+        <div class="tarjeta" th:if="${fila.evaluacion != null and fila.evaluacion.calificacion != null}">
+            <h3>Calificacion</h3>
+            <p>
+                Nota: <strong th:text="${fila.evaluacion.calificacion}"></strong>
+                &nbsp;|&nbsp; Juicio:
+                <span th:class="'etiqueta estado-' + ${#strings.toLowerCase(fila.evaluacion.juicio.name())}"
+                      th:text="${fila.evaluacion.juicio}"></span>
+            </p>
+            <p th:if="${fila.evaluacion.retroalimentacion != null}">
+                Retroalimentacion: <span th:text="${fila.evaluacion.retroalimentacion}"></span>
+            </p>
+        </div>
+
+        <div class="tarjeta" th:if="${fila.entrega != null}">
+            <h3>Tu entrega</h3>
+            <p>
+                Enviada el <strong th:text="${fila.fechaEntrega}"></strong>
+                <span class="etiqueta estado-vencida" th:if="${fila.entrega.tardia}">Tardia</span>
+            </p>
+            <p th:if="${fila.entrega.comentario != null}" th:text="${fila.entrega.comentario}"></p>
+            <p th:if="${fila.entrega.tieneArchivo}">
+                Archivo:
+                <a th:href="@{/entregas/{id}/archivo(id=${fila.entrega.id})}" th:text="${fila.entrega.nombreArchivo}"></a>
+                <span class="texto-ayuda" th:text="${fila.entrega.tamanoBytes < 1024} ? '(' + ${fila.entrega.tamanoBytes} + ' bytes)' : '(' + ${#numbers.formatDecimal(fila.entrega.tamanoBytes / 1024.0, 1, 1)} + ' KB)'"></span>
+            </p>
+        </div>
+
+        <div class="tarjeta" th:if="${puedeEntregar}">
+            <h3 th:text="${fila.entrega == null} ? 'Entregar actividad' : 'Actualizar entrega'"></h3>
+            <form th:action="@{/mis-actividades/{id}/entregar(id=${fila.actividad.id})}" method="post" enctype="multipart/form-data">
+                <div class="campo">
+                    <label>Comentario</label>
+                    <textarea name="comentario" rows="3" maxlength="1000"
+                              th:text="${fila.entrega != null} ? ${fila.entrega.comentario}"></textarea>
+                </div>
+                <div class="campo">
+                    <label>Archivo (opcional, maximo 5 MB)</label>
+                    <input type="file" name="archivo"
+                           accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.zip,.png,.jpg,.jpeg"/>
+                    <p class="texto-ayuda" th:if="${fila.entrega != null and fila.entrega.tieneArchivo}">
+                        Si no eliges un archivo nuevo se conserva el anterior.
+                    </p>
+                </div>
+                <button type="submit" class="boton" th:text="${fila.entrega == null} ? 'Entregar' : 'Guardar cambios'"></button>
+            </form>
+        </div>
+        <p class="texto-ayuda" th:unless="${puedeEntregar}">Esta actividad ya fue calificada y no admite cambios en la entrega.</p>
+    </div>
+</body>
+</html>

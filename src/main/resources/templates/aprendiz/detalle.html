@@ -2,7 +2,8 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8"/>
-    <title>Aprendiz - Sistema Academico CIPA</title>
+    <link rel="icon" th:href="@{/favicon.ico}"/>
+    <title>Aprendiz - Sistema Academico SENA</title>
     <link rel="stylesheet" th:href="@{/css/main.css}"/>
 </head>
 <body>
@@ -10,6 +11,7 @@
 
     <div class="contenedor">
         <div class="mensaje-exito" th:if="${mensaje}" th:text="${mensaje}"></div>
+        <div class="mensaje-error" th:if="${error}" th:text="${error}"></div>
 
         <div class="tarjeta">
             <h2 th:text="${aprendiz.usuario.nombreCompleto}"></h2>

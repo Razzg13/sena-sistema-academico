@@ -2,13 +2,16 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8"/>
-    <title>Nuevo usuario - Sistema Academico CIPA</title>
+    <link rel="icon" th:href="@{/favicon.ico}"/>
+    <title>Nuevo usuario - Sistema Academico SENA</title>
     <link rel="stylesheet" th:href="@{/css/main.css}"/>
 </head>
 <body>
     <div th:replace="~{fragments/layout :: barra}"></div>
 
     <div class="contenedor">
+        <div class="mensaje-exito" th:if="${mensaje}" th:text="${mensaje}"></div>
+        <div class="mensaje-error" th:if="${error}" th:text="${error}"></div>
         <div class="tarjeta" style="max-width:500px;margin:0 auto;">
             <h2>Nuevo usuario</h2>
             <form th:action="@{/usuarios/guardar}" th:object="${form}" method="post">

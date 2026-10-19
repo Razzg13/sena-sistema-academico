@@ -2,18 +2,70 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8"/>
-    <title>Inicio - Sistema Academico CIPA</title>
+    <link rel="icon" th:href="@{/favicon.ico}"/>
+    <title>Inicio - Sistema Academico SENA</title>
     <link rel="stylesheet" th:href="@{/css/main.css}"/>
 </head>
 <body>
     <div th:replace="~{fragments/layout :: barra}"></div>
 
     <div class="contenedor">
-        <div class="tarjeta">
-            <h2>Bienvenido(a), <span th:text="${usuario.nombreCompleto}"></span></h2>
-            <p>Rol: <strong th:text="${usuario.rol}"></strong></p>
+        <div class="mensaje-exito" th:if="${mensaje}" th:text="${mensaje}"></div>
+        <div class="mensaje-error" th:if="${error}" th:text="${error}"></div>
+
+        <div class="bienvenida">
+            <div>
+                <h2>Bienvenido(a), <span th:text="${usuario.nombreCompleto}"></span></h2>
+                <p class="texto-ayuda" th:text="${dashboard.titulo} + (${dashboard.subtitulo.isEmpty()} ? '' : ' · ' + ${dashboard.subtitulo})"></p>
+            </div>
+            <span class="etiqueta activo" th:text="${usuario.rol}"></span>
         </div>
 
+        <div class="mensaje-aviso" th:if="${dashboard.aviso != null}" th:text="${dashboard.aviso}"></div>
+
+        <div class="metricas" th:if="${!dashboard.metricas.isEmpty()}">
+            <div th:each="m : ${dashboard.metricas}" th:class="'metrica' + (${m.tono.isEmpty()} ? '' : ' tono-' + ${m.tono})">
+                <span class="metrica-etiqueta" th:text="${m.etiqueta}"></span>
+                <strong class="metrica-valor" th:text="${m.valor}"></strong>
+                <span class="metrica-detalle" th:if="${!m.detalle.isEmpty()}" th:text="${m.detalle}"></span>
+            </div>
+        </div>
+
+        <div class="tarjeta" th:if="${!dashboard.medidores.isEmpty()}">
+            <h3>Indicadores</h3>
+            <div class="medidores">
+                <div th:each="med : ${dashboard.medidores}" th:class="'medidor' + (${med.tono.isEmpty()} ? '' : ' tono-' + ${med.tono})">
+                    <div class="medidor-cabecera">
+                        <span th:text="${med.etiqueta}"></span>
+                        <strong th:text="${med.porcentaje} + '%'"></strong>
+                    </div>
+                    <div class="medidor-pista" role="progressbar" aria-valuemin="0" aria-valuemax="100"
+                         th:attr="aria-valuenow=${med.porcentaje},aria-label=${med.etiqueta}">
+                        <div class="medidor-relleno" th:style="'width:' + ${med.porcentaje} + '%'"></div>
+                    </div>
+                    <span class="metrica-detalle" th:text="${med.detalle}"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="listas-resumen" th:if="${!dashboard.listas.isEmpty()}">
+            <div class="tarjeta" th:each="lista : ${dashboard.listas}">
+                <h3 th:text="${lista.titulo}"></h3>
+                <p class="texto-ayuda" th:if="${lista.items.isEmpty()}" th:text="${lista.vacio}"></p>
+                <ul class="lista-resumen" th:if="${!lista.items.isEmpty()}">
+                    <li th:each="item : ${lista.items}">
+                        <div class="lista-texto">
+                            <a th:if="${item.enlace != null}" th:href="@{${item.enlace}}" th:text="${item.titulo}"></a>
+                            <strong th:if="${item.enlace == null}" th:text="${item.titulo}"></strong>
+                            <span class="metrica-detalle" th:text="${item.detalle}"></span>
+                        </div>
+                        <span th:if="${item.etiqueta != null}" th:class="'etiqueta ' + ${item.claseEtiqueta}" th:text="${item.etiqueta}"></span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <h3 class="titulo-accesos">Accesos rapidos</h3>
         <div class="tarjetas-menu">
             <a class="tarjeta-menu" th:href="@{/programas}" sec:authorize="hasAnyRole('ADMINISTRADOR','COORDINACION_ACADEMICA')">
                 <h3>Programas</h3>
@@ -31,6 +83,10 @@
                 <h3>Aprendices</h3>
                 <p>Aprendices y sus matriculas.</p>
             </a>
+            <a class="tarjeta-menu" th:href="@{/mis-fichas}" sec:authorize="hasRole('INSTRUCTOR')">
+                <h3>Mis fichas</h3>
+                <p>Las fichas que tienes asignadas, con asistencia y calificaciones.</p>
+            </a>
             <a class="tarjeta-menu" th:href="@{/sesiones}" sec:authorize="hasAnyRole('ADMINISTRADOR','COORDINACION_ACADEMICA','INSTRUCTOR')">
                 <h3>Sesiones y asistencia</h3>
                 <p>Clases dictadas y control de asistencia.</p>
@@ -42,6 +98,18 @@
             <a class="tarjeta-menu" th:href="@{/usuarios}" sec:authorize="hasRole('ADMINISTRADOR')">
                 <h3>Usuarios</h3>
                 <p>Cuentas de acceso al sistema.</p>
+            </a>
+            <a class="tarjeta-menu" th:href="@{/mis-datos}" sec:authorize="hasRole('APRENDIZ')">
+                <h3>Mi informacion</h3>
+                <p>Tu ficha, tu asistencia y tus calificaciones.</p>
+            </a>
+            <a class="tarjeta-menu" th:href="@{/mis-actividades}" sec:authorize="hasRole('APRENDIZ')">
+                <h3>Mis actividades</h3>
+                <p>Actividades asignadas por tus instructores y tus entregas.</p>
+            </a>
+            <a class="tarjeta-menu" th:href="@{/auditoria}" sec:authorize="hasRole('CONSULTA_AUDITOR')">
+                <h3>Auditoria</h3>
+                <p>Panel de solo lectura: fichas, matriculas e instructores asignados.</p>
             </a>
         </div>
     </div>
