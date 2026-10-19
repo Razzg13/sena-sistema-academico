@@ -36,8 +36,13 @@
                     <td th:text="${usuario.nombreCompleto}"></td>
                     <td th:text="${usuario.correo}"></td>
                     <td th:text="${usuario.rol}"></td>
-                    <td th:text="${usuario.estado}"></td>
+                    <td><span th:class="'etiqueta ' + (${usuario.estado.name() == 'ACTIVO'} ? 'activo' : 'inactivo')" th:text="${usuario.estado}"></span></td>
                     <td class="acciones-tabla">
+                        <a th:href="@{/usuarios/{id}/clave(id=${usuario.id})}">Restablecer clave</a>
+                        <form th:action="@{/usuarios/{id}/estado(id=${usuario.id})}" method="post" style="display:inline">
+                            <button type="submit" class="boton secundario"
+                                    th:text="${usuario.estado.name() == 'ACTIVO'} ? 'Desactivar' : 'Activar'"></button>
+                        </form>
                         <form th:action="@{/usuarios/{id}/eliminar(id=${usuario.id})}" method="post" style="display:inline">
                             <button type="submit" class="boton peligro" onclick="return confirm('¿Eliminar este usuario?')">Eliminar</button>
                         </form>
