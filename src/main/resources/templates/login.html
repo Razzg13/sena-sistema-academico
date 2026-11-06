@@ -2,14 +2,15 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8"/>
-    <title>Iniciar sesion - Sistema Academico CIPA</title>
+    <link rel="icon" th:href="@{/favicon.ico}"/>
+    <title>Iniciar sesion - Sistema Academico SENA</title>
     <link rel="stylesheet" th:href="@{/css/main.css}"/>
 </head>
 <body>
     <div class="pantalla-login">
         <div class="caja-login">
             <img th:src="@{/img/logo_sena.png}" alt="Logo SENA"/>
-            <h2>Sistema Academico CIPA</h2>
+            <h2>Sistema Academico SENA</h2>
 
             <div class="mensaje-error" th:if="${param.error}">
                 Correo o clave incorrectos.

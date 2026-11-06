@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <link rel="icon" th:href="@{/favicon.ico}"/>
+    <title>Cambiar clave - Sistema Academico SENA</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}"/>
+</head>
+<body>
+    <div th:replace="~{fragments/layout :: barra}"></div>
+
+    <div class="contenedor">
+        <div class="mensaje-error" th:if="${error}" th:text="${error}"></div>
+        <div class="tarjeta" style="max-width:500px;margin:0 auto;">
+            <h2>Cambiar mi clave</h2>
+            <form th:action="@{/cuenta/clave}" method="post">
+                <div class="campo">
+                    <label>Clave actual</label>
+                    <input type="password" name="actual" required autocomplete="current-password"/>
+                </div>
+                <div class="campo">
+                    <label>Clave nueva (minimo 6 caracteres)</label>
+                    <input type="password" name="nueva" required minlength="6" autocomplete="new-password"/>
+                </div>
+                <div class="campo">
+                    <label>Confirmar clave nueva</label>
+                    <input type="password" name="confirmacion" required minlength="6" autocomplete="new-password"/>
+                </div>
+                <button type="submit" class="boton ancho-completo">Guardar clave</button>
+                <a th:href="@{/inicio}" class="boton secundario ancho-completo" style="margin-top:0.5rem;display:block;text-align:center;">Cancelar</a>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
