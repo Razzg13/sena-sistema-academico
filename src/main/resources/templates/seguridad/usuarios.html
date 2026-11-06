@@ -2,7 +2,8 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8"/>
-    <title>Usuarios - Sistema Academico CIPA</title>
+    <link rel="icon" th:href="@{/favicon.ico}"/>
+    <title>Usuarios - Sistema Academico SENA</title>
     <link rel="stylesheet" th:href="@{/css/main.css}"/>
 </head>
 <body>
@@ -10,6 +11,7 @@
 
     <div class="contenedor">
         <div class="mensaje-exito" th:if="${mensaje}" th:text="${mensaje}"></div>
+        <div class="mensaje-error" th:if="${error}" th:text="${error}"></div>
 
         <div class="encabezado-seccion">
             <h2>Usuarios</h2>
@@ -34,8 +36,13 @@
                     <td th:text="${usuario.nombreCompleto}"></td>
                     <td th:text="${usuario.correo}"></td>
                     <td th:text="${usuario.rol}"></td>
-                    <td th:text="${usuario.estado}"></td>
+                    <td><span th:class="'etiqueta ' + (${usuario.estado.name() == 'ACTIVO'} ? 'activo' : 'inactivo')" th:text="${usuario.estado}"></span></td>
                     <td class="acciones-tabla">
+                        <a th:href="@{/usuarios/{id}/clave(id=${usuario.id})}">Restablecer clave</a>
+                        <form th:action="@{/usuarios/{id}/estado(id=${usuario.id})}" method="post" style="display:inline">
+                            <button type="submit" class="boton secundario"
+                                    th:text="${usuario.estado.name() == 'ACTIVO'} ? 'Desactivar' : 'Activar'"></button>
+                        </form>
                         <form th:action="@{/usuarios/{id}/eliminar(id=${usuario.id})}" method="post" style="display:inline">
                             <button type="submit" class="boton peligro" onclick="return confirm('¿Eliminar este usuario?')">Eliminar</button>
                         </form>

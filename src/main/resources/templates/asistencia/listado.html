@@ -2,7 +2,8 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8"/>
-    <title>Sesiones - Sistema Academico CIPA</title>
+    <link rel="icon" th:href="@{/favicon.ico}"/>
+    <title>Sesiones - Sistema Academico SENA</title>
     <link rel="stylesheet" th:href="@{/css/main.css}"/>
 </head>
 <body>
@@ -10,14 +11,18 @@
 
     <div class="contenedor">
         <div class="mensaje-exito" th:if="${mensaje}" th:text="${mensaje}"></div>
+        <div class="mensaje-error" th:if="${error}" th:text="${error}"></div>
 
         <div class="encabezado-seccion">
             <h2>Sesiones de formacion</h2>
             <a class="boton" th:href="@{/sesiones/nuevo}">+ Nueva sesion</a>
         </div>
 
+        <p class="texto-ayuda" th:if="${soloMisFichas}">Solo se muestran las sesiones de las fichas que tienes asignadas.</p>
+
         <div class="tarjeta">
-            <table>
+            <p th:if="${sesiones.isEmpty()}">Todavia no hay sesiones para mostrar.</p>
+            <table th:if="${!sesiones.isEmpty()}">
                 <thead>
                 <tr>
                     <th>Ficha</th>

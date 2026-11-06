@@ -1,24 +1,86 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <body>
-    <div th:fragment="barra" class="barra-superior">
-        <div class="marca">
+    <aside th:fragment="barra" class="sidebar">
+        <div class="sidebar-marca">
             <img th:src="@{/img/logo_sena_blanco.png}" alt="Logo SENA"/>
-            <strong>Sistema Academico CIPA</strong>
+            <div class="sidebar-marca-texto">
+                <strong>SENA</strong>
+                <span>Sistema Academico</span>
+            </div>
         </div>
-        <nav>
-            <a th:href="@{/inicio}">Inicio</a>
-            <a th:href="@{/programas}" sec:authorize="hasAnyRole('ADMINISTRADOR','COORDINACION_ACADEMICA')">Programas</a>
-            <a th:href="@{/fichas}" sec:authorize="hasAnyRole('ADMINISTRADOR','COORDINACION_ACADEMICA')">Fichas</a>
-            <a th:href="@{/instructores}" sec:authorize="hasAnyRole('ADMINISTRADOR','COORDINACION_ACADEMICA')">Instructores</a>
-            <a th:href="@{/aprendices}" sec:authorize="hasAnyRole('ADMINISTRADOR','COORDINACION_ACADEMICA')">Aprendices</a>
-            <a th:href="@{/sesiones}" sec:authorize="hasAnyRole('ADMINISTRADOR','COORDINACION_ACADEMICA','INSTRUCTOR')">Sesiones</a>
-            <a th:href="@{/actividades}" sec:authorize="hasAnyRole('ADMINISTRADOR','COORDINACION_ACADEMICA','INSTRUCTOR')">Evaluaciones</a>
-            <a th:href="@{/usuarios}" sec:authorize="hasRole('ADMINISTRADOR')">Usuarios</a>
-            <form th:action="@{/logout}" method="post" style="display:inline">
-                <button type="submit" style="background:none;border:none;color:white;cursor:pointer;margin-left:1rem;text-decoration:underline;">Salir</button>
-            </form>
+
+        <nav class="sidebar-nav">
+            <a th:href="@{/inicio}" class="sidebar-link">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5 12 3l9 6.5"/><path d="M5 10v10a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V10"/></svg>
+                <span>Inicio</span>
+            </a>
+            <a th:href="@{/programas}" class="sidebar-link" sec:authorize="hasAnyRole('ADMINISTRADOR','COORDINACION_ACADEMICA')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+                <span>Programas</span>
+            </a>
+            <a th:href="@{/fichas}" class="sidebar-link" sec:authorize="hasAnyRole('ADMINISTRADOR','COORDINACION_ACADEMICA')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M3 12h18"/></svg>
+                <span>Fichas</span>
+            </a>
+            <a th:href="@{/instructores}" class="sidebar-link" sec:authorize="hasAnyRole('ADMINISTRADOR','COORDINACION_ACADEMICA')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="m17 11 2 2 4-4"/></svg>
+                <span>Instructores</span>
+            </a>
+            <a th:href="@{/aprendices}" class="sidebar-link" sec:authorize="hasAnyRole('ADMINISTRADOR','COORDINACION_ACADEMICA')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                <span>Aprendices</span>
+            </a>
+            <a th:href="@{/mis-fichas}" class="sidebar-link" sec:authorize="hasRole('INSTRUCTOR')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M3 12h18"/></svg>
+                <span>Mis fichas</span>
+            </a>
+            <a th:href="@{/sesiones}" class="sidebar-link" sec:authorize="hasAnyRole('ADMINISTRADOR','COORDINACION_ACADEMICA','INSTRUCTOR')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/></svg>
+                <span>Sesiones</span>
+            </a>
+            <a th:href="@{/actividades}" class="sidebar-link" sec:authorize="hasAnyRole('ADMINISTRADOR','COORDINACION_ACADEMICA','INSTRUCTOR')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 11 3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                <span>Evaluaciones</span>
+            </a>
+            <a th:href="@{/usuarios}" class="sidebar-link" sec:authorize="hasRole('ADMINISTRADOR')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                <span>Usuarios</span>
+            </a>
+            <a th:href="@{/mis-datos}" class="sidebar-link" sec:authorize="hasRole('APRENDIZ')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                <span>Mi informacion</span>
+            </a>
+            <a th:href="@{/mis-actividades}" class="sidebar-link" sec:authorize="hasRole('APRENDIZ')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 11 3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                <span>Mis actividades</span>
+            </a>
+            <a th:href="@{/auditoria}" class="sidebar-link" sec:authorize="hasRole('CONSULTA_AUDITOR')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+                <span>Auditoria</span>
+            </a>
+            <a th:href="@{/cuenta/clave}" class="sidebar-link">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                <span>Cambiar clave</span>
+            </a>
         </nav>
-    </div>
+
+        <div class="sidebar-footer">
+            <div class="sidebar-usuario">
+                <div class="sidebar-avatar">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                </div>
+                <div class="sidebar-usuario-texto">
+                    <strong sec:authentication="principal.usuario.nombreCompleto">Usuario</strong>
+                    <span sec:authentication="principal.usuario.rol">ROL</span>
+                </div>
+            </div>
+            <form th:action="@{/logout}" method="post">
+                <button type="submit" class="sidebar-salir" title="Cerrar sesion">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+                </button>
+            </form>
+        </div>
+    </aside>
 </body>
 </html>

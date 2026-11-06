@@ -2,13 +2,16 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8"/>
-    <title>Tomar asistencia - Sistema Academico CIPA</title>
+    <link rel="icon" th:href="@{/favicon.ico}"/>
+    <title>Tomar asistencia - Sistema Academico SENA</title>
     <link rel="stylesheet" th:href="@{/css/main.css}"/>
 </head>
 <body>
     <div th:replace="~{fragments/layout :: barra}"></div>
 
     <div class="contenedor">
+        <div class="mensaje-exito" th:if="${mensaje}" th:text="${mensaje}"></div>
+        <div class="mensaje-error" th:if="${error}" th:text="${error}"></div>
         <div class="tarjeta">
             <h2>Asistencia - Ficha <span th:text="${sesion.ficha.numero}"></span></h2>
             <p th:text="${sesion.fecha} + ' · ' + ${sesion.tema}"></p>
