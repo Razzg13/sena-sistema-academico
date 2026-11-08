@@ -5,6 +5,9 @@ import java.util.NoSuchElementException;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.http.HttpServletRequest;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -17,6 +20,8 @@ import com.sena.cipa.excepcion.NegocioException;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
+    private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+
     @ExceptionHandler(NoSuchElementException.class)
     public String noEncontrado(HttpServletRequest request, RedirectAttributes redirectAttributes) {
         redirectAttributes.addFlashAttribute("error", "El registro solicitado no existe o ya fue eliminado.");
@@ -28,6 +33,19 @@ public class GlobalExceptionHandler {
         redirectAttributes.addFlashAttribute("error",
                 "No se pudo completar la accion: el dato ya existe (codigo, numero, correo o documento duplicado) "
                         + "o el registro esta siendo usado por otros datos relacionados.");
+        return "redirect:" + seccionRaiz(request);
+    }
+
+    /** Cualquier otro problema con la base de datos: aviso claro en vez de la pagina 500; el detalle tecnico solo lo ve el administrador. */
+    @ExceptionHandler(DataAccessException.class)
+    public String errorDeBaseDeDatos(DataAccessException e, HttpServletRequest request, RedirectAttributes redirectAttributes) {
+        log.error("Error de base de datos en {}", request.getRequestURI(), e);
+        String mensaje = "No se pudo guardar por un problema con la base de datos. Intenta de nuevo o avisa al administrador.";
+        if (request.isUserInRole("ADMINISTRADOR")) {
+            String causa = e.getMostSpecificCause().getMessage();
+            mensaje += " Detalle: " + (causa == null ? e.getClass().getSimpleName() : causa.substring(0, Math.min(causa.length(), 250)));
+        }
+        redirectAttributes.addFlashAttribute("error", mensaje);
         return "redirect:" + seccionRaiz(request);
     }
 
