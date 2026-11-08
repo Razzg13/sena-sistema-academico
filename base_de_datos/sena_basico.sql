@@ -1,5 +1,5 @@
 -- ============================================================
--- Base de datos basica del Sistema Academico SENA (11 tablas)
+-- Base de datos basica del Sistema Academico SENA (13 tablas)
 -- ============================================================
 DROP DATABASE IF EXISTS sena_basico;
 CREATE DATABASE sena_basico;
