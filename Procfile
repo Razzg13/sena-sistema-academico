@@ -1,1 +1,1 @@
-web: java -jar target/sena-cipa-web.jar
+web: java -jar target/sena-cipa-web.war
