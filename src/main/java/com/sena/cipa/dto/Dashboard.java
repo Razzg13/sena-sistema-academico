@@ -2,11 +2,9 @@ package com.sena.cipa.dto;
 
 import java.util.List;
 
-/** Modelo de vista generico del resumen de inicio; cada rol arma su propio contenido. */
 public record Dashboard(String titulo, String subtitulo, String aviso, List<Metrica> metricas,
                         List<Medidor> medidores, List<Lista> listas) {
 
-    /** tono: "" (neutro), "ok", "alerta" o "critico". */
     public record Metrica(String valor, String etiqueta, String detalle, String tono) {
     }
 

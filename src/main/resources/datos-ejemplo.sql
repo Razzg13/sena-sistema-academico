@@ -1,5 +1,4 @@
--- Datos de ejemplo para la base H2 de prueba (los mismos de base_de_datos/sena_basico.sql).
--- Se cargan solos cuando la app arranca sin MySQL. Clave de todos: sena1234.
+-- datos de prueba (clave: sena1234)
 
 INSERT INTO usuarios (documento, nombre_completo, correo, telefono, clave, rol, estado) VALUES
     ('1010101', 'Ines Instructora', 'ines@sena.edu.co', '3001112233', '$2a$10$buhwo33DjLN6NqtIOQhksuqYLjPoaFdwkBTHDqTRa3YPXK8vIyVW2', 'INSTRUCTOR', 'ACTIVO'),

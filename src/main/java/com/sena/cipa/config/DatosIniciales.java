@@ -38,8 +38,6 @@ public class DatosIniciales implements CommandLineRunner {
                 }
                 continue;
             }
-            // En modo demo las cuentas de prueba siempre deben poder entrar con la clave conocida,
-            // aunque la base venga de una version anterior con otras claves o usuarios desactivados.
             if (cuentasDemo.activo() && necesitaArreglo(usuario, cuenta)) {
                 usuario.setClave(passwordEncoder.encode(cuenta.clave()));
                 usuario.setRol(cuenta.rol());

@@ -106,8 +106,6 @@ public class DashboardService {
         };
     }
 
-    // ---------------------------------------------------------------- administrador
-
     private Dashboard administrador() {
         long cuentas = usuarioDao.count();
         List<Metrica> metricas = List.of(
@@ -133,8 +131,6 @@ public class DashboardService {
         return new Dashboard("Resumen general", "Estado actual del sistema academico.", null, metricas, medidores,
                 List.of(listaFichasSinInstructor(), listaCuentasSinPerfil(), listaActividadesPorVencer(null)));
     }
-
-    // ---------------------------------------------------------------- coordinacion
 
     private Dashboard coordinacion() {
         List<Ficha> fichas = fichaDao.findAll();
@@ -176,8 +172,6 @@ public class DashboardService {
                         new Lista("Fichas que terminan en 60 dias", "Ninguna ficha termina en los proximos 60 dias.", terminando),
                         listaActividadesPorVencer(null)));
     }
-
-    // ---------------------------------------------------------------- instructor
 
     private Dashboard instructor(Usuario usuario) {
         Optional<Instructor> perfil = instructorDao.findByUsuarioId(usuario.getId());
@@ -263,8 +257,6 @@ public class DashboardService {
                         new Lista("Proximas sesiones", "No hay sesiones programadas. Registra una desde Mis fichas.", itemsSesiones),
                         new Lista("Actividades por vencer", "No hay actividades vigentes en tus fichas.", itemsActividades)));
     }
-
-    // ---------------------------------------------------------------- aprendiz
 
     private Dashboard aprendiz(Usuario usuario) {
         Optional<Aprendiz> perfil = aprendizDao.findByUsuarioId(usuario.getId());
@@ -356,8 +348,6 @@ public class DashboardService {
                         new Lista("Proximas sesiones", "No hay sesiones programadas.", sesiones)));
     }
 
-    // ---------------------------------------------------------------- auditor
-
     private Dashboard auditor() {
         List<Asistencia> asistencias = asistenciaDao.findAll();
         List<Evaluacion> evaluaciones = evaluacionDao.findAll();
@@ -402,8 +392,6 @@ public class DashboardService {
                         listaFichasSinInstructor()));
     }
 
-    // ---------------------------------------------------------------- listas compartidas
-
     private List<Ficha> fichasSinInstructor() {
         return fichaDao.findByEstado(EstadoFicha.EN_EJECUCION).stream()
                 .filter(f -> asignacionDao.findByFichaId(f.getId()).isEmpty())
@@ -447,8 +435,6 @@ public class DashboardService {
         return new Lista("Actividades por vencer (7 dias)", "No hay actividades que venzan esta semana.", items);
     }
 
-    // ---------------------------------------------------------------- utilidades
-
     private Dashboard sinContenido(String titulo, String aviso) {
         return new Dashboard(titulo, "", aviso, List.of(), List.of(), List.of());
     }
@@ -461,7 +447,6 @@ public class DashboardService {
         return total == 0 ? 0 : (int) Math.round(100.0 * parte / total);
     }
 
-    /** (presente + tardanza) / (registros - excusados); null si no hay registros que cuenten. */
     private Integer tasaAsistencia(Collection<Asistencia> registros) {
         long contables = registros.stream().filter(a -> a.getEstado() != EstadoAsistencia.EXCUSADO).count();
         if (contables == 0) {

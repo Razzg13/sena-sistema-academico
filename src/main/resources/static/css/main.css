@@ -42,7 +42,7 @@ h1, h2, h3, h4 {
     color: #10251d;
 }
 
-/* ===== Sidebar ===== */
+/* Sidebar */
 
 .sidebar {
     flex: 0 0 var(--sidebar-ancho);
@@ -205,7 +205,7 @@ h1, h2, h3, h4 {
     color: #fff;
 }
 
-/* ===== Contenido principal ===== */
+/* Contenido principal */
 
 .contenedor {
     flex: 1;
@@ -237,7 +237,7 @@ h1, h2, h3, h4 {
     font-size: 1.4rem;
 }
 
-/* ===== Login ===== */
+/* Login */
 
 .pantalla-login {
     min-height: 100vh;
@@ -275,7 +275,7 @@ h1, h2, h3, h4 {
     font-size: 1.25rem;
 }
 
-/* ===== Formularios ===== */
+/* Formularios */
 
 .campo {
     margin-bottom: 1.1rem;
@@ -313,7 +313,7 @@ h1, h2, h3, h4 {
     background: #ffffff;
 }
 
-/* ===== Botones ===== */
+/* Botones */
 
 .boton {
     display: inline-flex;
@@ -370,7 +370,7 @@ h1, h2, h3, h4 {
     width: 100%;
 }
 
-/* ===== Mensajes ===== */
+/* Mensajes */
 
 .mensaje-error {
     background: #fff1f1;
@@ -394,7 +394,7 @@ h1, h2, h3, h4 {
     font-weight: 500;
 }
 
-/* ===== Tablas ===== */
+/* Tablas */
 
 .tarjeta:has(table) {
     padding: 0.4rem;
@@ -484,7 +484,7 @@ table input[type="number"] {
     text-decoration: underline;
 }
 
-/* ===== Tarjetas de menu (inicio) ===== */
+/* Tarjetas de menu (inicio) */
 
 .tarjetas-menu {
     display: grid;
@@ -522,7 +522,7 @@ table input[type="number"] {
     line-height: 1.4;
 }
 
-/* ===== Etiquetas de estado ===== */
+/* Etiquetas de estado */
 
 .etiqueta {
     display: inline-flex;
@@ -623,7 +623,7 @@ table input[type="number"] {
 }
 
 
-/* ===== Dashboard de inicio ===== */
+/* Dashboard de inicio */
 
 .bienvenida {
     display: flex;
@@ -797,7 +797,7 @@ table input[type="number"] {
     color: var(--texto-muted);
 }
 
-/* ===== Responsive ===== */
+/* Responsive */
 
 @media (max-width: 880px) {
     body {
@@ -843,7 +843,7 @@ table input[type="number"] {
     }
 }
 
-/* ===== Cuentas de prueba en el login (solo en modo demo) ===== */
+/* Cuentas de prueba */
 
 .cuentas-demo {
     margin-top: 1.4rem;

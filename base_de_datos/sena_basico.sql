@@ -1,11 +1,9 @@
--- ============================================================
--- Base de datos basica del Sistema Academico SENA (13 tablas)
--- ============================================================
+-- Sistema Academico SENA
 DROP DATABASE IF EXISTS sena_basico;
 CREATE DATABASE sena_basico;
 USE sena_basico;
 
--- 1. usuarios: las personas que usan el sistema (con su clave cifrada y su rol)
+-- usuarios
 CREATE TABLE usuarios (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     documento VARCHAR(20) NOT NULL UNIQUE,
@@ -17,7 +15,7 @@ CREATE TABLE usuarios (
     estado ENUM('ACTIVO','INACTIVO') NOT NULL DEFAULT 'ACTIVO'
 );
 
--- 2. programas: catalogo de programas de formacion
+-- programas
 CREATE TABLE programas (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     codigo VARCHAR(20) NOT NULL UNIQUE,
@@ -28,7 +26,7 @@ CREATE TABLE programas (
     estado ENUM('ACTIVO','INACTIVO') NOT NULL DEFAULT 'ACTIVO'
 );
 
--- 3. fichas: grupo de aprendices que cursa un programa
+-- fichas
 CREATE TABLE fichas (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     numero VARCHAR(20) NOT NULL UNIQUE,
@@ -41,8 +39,7 @@ CREATE TABLE fichas (
     CONSTRAINT fk_fichas_programa FOREIGN KEY (programa_id) REFERENCES programas(id)
 );
 
--- 4. instructores: extension de un usuario con rol INSTRUCTOR
---    (documento, nombre, correo y telefono ya estan en la tabla usuarios)
+-- instructores
 CREATE TABLE instructores (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     usuario_id BIGINT NOT NULL UNIQUE,
@@ -51,7 +48,7 @@ CREATE TABLE instructores (
     CONSTRAINT fk_instructores_usuario FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
 );
 
--- 5. asignaciones_instructor: que instructor atiende que ficha (y en que fechas)
+-- asignaciones_instructor
 CREATE TABLE asignaciones_instructor (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     ficha_id BIGINT NOT NULL,
@@ -62,8 +59,7 @@ CREATE TABLE asignaciones_instructor (
     CONSTRAINT fk_asignaciones_instructor FOREIGN KEY (instructor_id) REFERENCES instructores(id)
 );
 
--- 6. aprendices: extension de un usuario con rol APRENDIZ
---    (documento, nombre, correo y telefono ya estan en la tabla usuarios)
+-- aprendices
 CREATE TABLE aprendices (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     usuario_id BIGINT NOT NULL UNIQUE,
@@ -72,7 +68,7 @@ CREATE TABLE aprendices (
     CONSTRAINT fk_aprendices_usuario FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
 );
 
--- 7. matriculas: une un aprendiz con una ficha (es la tabla bisagra)
+-- matriculas
 CREATE TABLE matriculas (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     aprendiz_id BIGINT NOT NULL,
@@ -84,7 +80,7 @@ CREATE TABLE matriculas (
     CONSTRAINT uq_matriculas_aprendiz_ficha UNIQUE (aprendiz_id, ficha_id)
 );
 
--- 8. sesiones_formacion: cada clase que se dicta a una ficha
+-- sesiones_formacion
 CREATE TABLE sesiones_formacion (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     ficha_id BIGINT NOT NULL,
@@ -95,7 +91,7 @@ CREATE TABLE sesiones_formacion (
     CONSTRAINT fk_sesiones_ficha FOREIGN KEY (ficha_id) REFERENCES fichas(id)
 );
 
--- 9. asistencias: si un aprendiz (matricula) asistio a una sesion
+-- asistencias
 CREATE TABLE asistencias (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     sesion_id BIGINT NOT NULL,
@@ -107,7 +103,7 @@ CREATE TABLE asistencias (
     CONSTRAINT uq_asistencias_sesion_matricula UNIQUE (sesion_id, matricula_id)
 );
 
--- 10. actividades_evaluativas: talleres, pruebas o proyectos de una ficha
+-- actividades_evaluativas
 CREATE TABLE actividades_evaluativas (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     ficha_id BIGINT NOT NULL,
@@ -117,7 +113,7 @@ CREATE TABLE actividades_evaluativas (
     CONSTRAINT fk_actividades_ficha FOREIGN KEY (ficha_id) REFERENCES fichas(id)
 );
 
--- 11. evaluaciones: la nota de un aprendiz (matricula) en una actividad
+-- evaluaciones
 CREATE TABLE evaluaciones (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     actividad_id BIGINT NOT NULL,
@@ -131,6 +127,7 @@ CREATE TABLE evaluaciones (
     CONSTRAINT uq_evaluaciones_actividad_matricula UNIQUE (actividad_id, matricula_id)
 );
 
+-- entregas
 CREATE TABLE entregas (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     actividad_id BIGINT NOT NULL,
@@ -145,16 +142,14 @@ CREATE TABLE entregas (
     CONSTRAINT uq_entregas_actividad_matricula UNIQUE (actividad_id, matricula_id)
 );
 
+-- entrega_archivos
 CREATE TABLE entrega_archivos (
     entrega_id BIGINT PRIMARY KEY,
     contenido LONGBLOB NOT NULL,
     CONSTRAINT fk_entrega_archivos_entrega FOREIGN KEY (entrega_id) REFERENCES entregas(id)
 );
 
--- ============================================================
--- Datos de ejemplo (pocos, para ver la base funcionando)
--- ============================================================
--- Clave de TODOS los usuarios de ejemplo: sena1234 (se guarda cifrada con BCrypt)
+-- datos de prueba (clave: sena1234)
 INSERT INTO usuarios (documento, nombre_completo, correo, telefono, clave, rol) VALUES
     ('1010101', 'Ines Instructora', 'ines@sena.edu.co', '3001112233', '$2a$10$buhwo33DjLN6NqtIOQhksuqYLjPoaFdwkBTHDqTRa3YPXK8vIyVW2', 'INSTRUCTOR'),
     ('1010102', 'Carlos Contador', 'carlos@sena.edu.co', NULL, '$2a$10$buhwo33DjLN6NqtIOQhksuqYLjPoaFdwkBTHDqTRa3YPXK8vIyVW2', 'INSTRUCTOR'),

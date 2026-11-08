@@ -22,11 +22,6 @@ import org.springframework.core.annotation.Order;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
-/**
- * Si la base de datos viene de una version anterior del sistema, sus tablas pueden tener columnas viejas
- * obligatorias que la aplicacion actual no llena; entonces cualquier INSERT falla con "Field 'x' doesn't
- * have a default value". Al arrancar se vuelven opcionales esas columnas sobrantes. No borra datos.
- */
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class ReparadorEsquema implements CommandLineRunner {

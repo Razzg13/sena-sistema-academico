@@ -13,10 +13,6 @@ import com.sena.cipa.modelo.Usuario;
 import com.sena.cipa.modelo.enums.RolNombre;
 import com.sena.cipa.seguridad.UsuarioPrincipal;
 
-/**
- * Un INSTRUCTOR solo opera sobre las fichas que tiene asignadas; ADMINISTRADOR y
- * COORDINACION_ACADEMICA operan sobre todas.
- */
 @Service
 public class AccesoFichaService {
 
@@ -41,7 +37,6 @@ public class AccesoFichaService {
                 .orElseGet(Set::of);
     }
 
-    /** Vacio = sin restriccion de ficha; con valor = solo esas fichas. */
     public Optional<Set<Long>> fichasRestringidas(UsuarioPrincipal principal) {
         if (!esInstructor(principal)) {
             return Optional.empty();

@@ -19,7 +19,6 @@ public class UsuarioDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String correo) throws UsernameNotFoundException {
-        // Se acepta el correo con mayusculas o espacios de mas al inicio o al final.
         String limpio = correo == null ? "" : correo.trim();
         Usuario usuario = usuarioDao.findByCorreoIgnoreCase(limpio)
                 .orElseThrow(() -> new UsernameNotFoundException("No existe un usuario con el correo " + correo));

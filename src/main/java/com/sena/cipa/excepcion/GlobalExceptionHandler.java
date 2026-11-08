@@ -34,7 +34,6 @@ public class GlobalExceptionHandler {
         return "redirect:" + seccionRaiz(request);
     }
 
-    /** Cualquier otro problema con la base de datos: aviso claro en vez de la pagina 500; el detalle tecnico solo lo ve el administrador. */
     @ExceptionHandler(DataAccessException.class)
     public String errorDeBaseDeDatos(DataAccessException e, HttpServletRequest request, RedirectAttributes redirectAttributes) {
         log.error("Error de base de datos en {}", request.getRequestURI(), e);
@@ -63,7 +62,6 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MaxUploadSizeExceededException.class)
     public String archivoMuyGrande(HttpServletRequest request, RedirectAttributes redirectAttributes) {
         redirectAttributes.addFlashAttribute("error", "El archivo supera el tamano maximo permitido (5 MB).");
-        // El limite se detecta al leer el formulario, antes del controlador: ahi la URI original llega como atributo del error.
         String uri = uriOriginal(request);
         return "redirect:" + (uri.endsWith("/entregar") ? uri.substring(0, uri.length() - "/entregar".length())
                 : seccionRaiz(request));

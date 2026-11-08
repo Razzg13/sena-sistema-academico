@@ -45,7 +45,6 @@
 			<artifactId>thymeleaf-extras-springsecurity6</artifactId>
 		</dependency>
 
-		<!-- Tomcat queda como "provided": en un Tomcat externo lo pone el servidor; con java -jar lo trae el WAR ejecutable. -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-tomcat</artifactId>

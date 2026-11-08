@@ -8,11 +8,6 @@ import org.springframework.stereotype.Component;
 import com.sena.cipa.dao.UsuarioDao;
 import com.sena.cipa.modelo.enums.RolNombre;
 
-/**
- * Cuentas de prueba del sistema. En modo demo (base H2 o app.cuentas-demo=true)
- * se muestran en la pantalla de login y se dejan siempre con su clave conocida.
- * En produccion (Railway) el modo demo esta apagado.
- */
 @Component
 public class CuentasDemo {
 
@@ -20,7 +15,6 @@ public class CuentasDemo {
                          String descripcion, boolean seCreaSola) {
     }
 
-    /** Las 5 primeras se crean al arrancar; las otras vienen en el script de datos de ejemplo. */
     public static final List<Cuenta> CUENTAS = List.of(
             new Cuenta("0000000001", "Administrador del Sistema", "admin@sena.edu.co", "admin123", RolNombre.ADMINISTRADOR, "Administrador", true),
             new Cuenta("0000000002", "Coordinacion Demo", "coordinacion.demo@sena.edu.co", "coordinacion123", RolNombre.COORDINACION_ACADEMICA, "Coordinacion", true),
@@ -48,7 +42,6 @@ public class CuentasDemo {
         return activo;
     }
 
-    /** Cuentas que existen en la base, para mostrarlas en el login (vacio fuera del modo demo). */
     public List<Cuenta> visibles() {
         if (!activo) {
             return List.of();
