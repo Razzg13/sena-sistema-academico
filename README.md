@@ -28,6 +28,8 @@ src/main/
 │   ├── servicio/             SERVICIO: reglas de negocio compartidas
 │   │                         AccesoFichaService (alcance del instructor), DashboardService
 │   │
+│   ├── conexion/             CONEXION a la base de datos (ConexionBaseDatos): lee la URL,
+│   │                         usuario y clave de application*.properties según el perfil
 │   ├── seguridad/            Login, roles y permisos por ruta
 │   │                         SecurityConfig, UsuarioDetailsService, UsuarioPrincipal
 │   ├── config/               Tareas al arrancar: datos iniciales, reparación de tablas,
@@ -48,12 +50,26 @@ base_de_datos/                Scripts SQL (sena_basico.sql y la versión para Ra
 ### Cómo viaja una petición
 
 ```
-Navegador → seguridad (¿puede entrar?) → controlador → servicio (reglas) → dao → base de datos
-                                              ↓                                   ↓
-                              vista (HTML) ← controlador ← modelo / dto  ←────────┘
+Navegador → seguridad (¿puede entrar?) → controlador → servicio (reglas) → dao → conexion → base de datos
+                                              ↓                                               ↓
+                              vista (HTML) ← controlador ← modelo / dto  ←────────────────────┘
                                    ↓
                                Navegador
 ```
+
+## Dónde está la conexión a la base de datos
+
+| Modo | Archivo con los datos de conexión | Cómo se activa |
+|---|---|---|
+| Pruebas (H2 en memoria) | `application.properties` | Sin perfil (por defecto) |
+| MySQL local / profesor | `application-mysql.properties` (`DB_URL`, `DB_USERNAME`, `DB_PASSWORD`) | `--spring.profiles.active=mysql` |
+| Railway | `application-railway.properties` (`MYSQLHOST`, `MYSQLUSER`...) | `SPRING_PROFILES_ACTIVE=railway` |
+
+La clase `conexion/ConexionBaseDatos.java` crea la conexión con esos datos y, al arrancar,
+escribe en la consola a qué base se conectó (`Base de datos conectada: MySQL ...`).
+
+Cada carpeta de `java/com/sena/cipa/` tiene un `package-info.java` que explica qué hay en
+ella y con qué capas se conecta.
 
 ## Ejecutar
 
