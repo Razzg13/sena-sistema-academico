@@ -14,7 +14,6 @@ import com.sena.cipa.excepcion.NegocioException;
 import com.sena.cipa.modelo.Usuario;
 import com.sena.cipa.seguridad.UsuarioPrincipal;
 
-/** Cualquier usuario autenticado puede cambiar su propia clave. */
 @Controller
 @RequestMapping("/cuenta")
 public class CuentaController {

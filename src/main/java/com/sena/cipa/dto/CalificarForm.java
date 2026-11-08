@@ -15,7 +15,6 @@ public class CalificarForm {
         private JuicioEvaluacion juicio = JuicioEvaluacion.POR_MEJORAR;
         private String retroalimentacion;
 
-        // Solo para mostrar la entrega del aprendiz; no se guardan desde este formulario.
         private Long entregaId;
         private String entregaFecha;
         private String entregaComentario;

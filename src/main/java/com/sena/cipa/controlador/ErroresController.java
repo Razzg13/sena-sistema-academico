@@ -9,7 +9,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
-/** Pagina de error amigable para lo que no alcanza a atender el GlobalExceptionHandler (404, limite de subida, etc.). */
 @Controller
 public class ErroresController implements ErrorController {
 

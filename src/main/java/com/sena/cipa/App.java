@@ -10,7 +10,6 @@ import org.springframework.data.web.config.EnableSpringDataWebSupport;
 @EnableSpringDataWebSupport
 public class App extends SpringBootServletInitializer {
 
-    /** Punto de entrada cuando el WAR se despliega en un Tomcat externo. */
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
         return builder.sources(App.class);
