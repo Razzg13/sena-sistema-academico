@@ -18,8 +18,6 @@ src/main/
 │   │   └── enums/            Listas de opciones fijas: roles y estados
 │   │                         RolNombre, EstadoFicha, EstadoAsistencia, JuicioEvaluacion...
 │   │
-│   ├── vista → ver resources/vista/
-│   │
 │   ├── controlador/          CONTROLADOR (C): recibe cada URL, valida y elige la pantalla
 │   │                         FichaController, SesionFormacionController, EntregaController...
 │   │
@@ -69,8 +67,8 @@ java -jar target/sena-cipa-web.war        # abre http://localhost:8080/
 También se puede copiar `target/sena-cipa-web.war` a la carpeta `webapps` de un Tomcat 10.1
 (queda en `http://localhost:8080/sena-cipa-web/`).
 
-Por defecto usa una base H2 en memoria con datos de ejemplo, y el login muestra las cuentas\nde prueba. Para MySQL, cargar `base_de_datos/sena_basico.sql` y
-arrancar con el perfil `mysql`:
+Por defecto usa una base H2 en memoria con datos de ejemplo, y el login muestra las
+cuentas de prueba. Para MySQL, cargar `base_de_datos/sena_basico.sql` y arrancar con el perfil `mysql`:
 
 ```
 java -Dspring.profiles.active=mysql -DDB_URL="jdbc:mysql://localhost:3306/sena_basico?allowPublicKeyRetrieval=true&useSSL=false" -DDB_USERNAME=root -DDB_PASSWORD=su_clave -jar target/sena-cipa-web.war
