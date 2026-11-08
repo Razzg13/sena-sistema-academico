@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <link rel="icon" th:href="@{/favicon.ico}"/>
+    <title>Iniciar sesion - Sistema Academico SENA</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}"/>
+</head>
+<body>
+    <div class="pantalla-login">
+        <div class="caja-login">
+            <img th:src="@{/img/logo_sena.png}" alt="Logo SENA"/>
+            <h2>Sistema Academico SENA</h2>
+
+            <div class="mensaje-error" th:if="${param.error}">
+                Correo o clave incorrectos.
+            </div>
+            <div class="mensaje-exito" th:if="${param.logout}">
+                Sesion cerrada correctamente.
+            </div>
+
+            <form th:action="@{/login}" method="post">
+                <div class="campo">
+                    <label for="username">Correo</label>
+                    <input type="email" id="username" name="username" required autofocus/>
+                </div>
+                <div class="campo">
+                    <label for="password">Clave</label>
+                    <input type="password" id="password" name="password" required/>
+                </div>
+                <button type="submit" class="boton ancho-completo">Entrar</button>
+            </form>
+
+            <details class="cuentas-demo" th:if="${!#lists.isEmpty(cuentasDemo)}" th:open="${param.error != null}">
+                <summary>Cuentas de prueba</summary>
+                <p class="texto-ayuda">Toca una cuenta para llenar el correo y la clave.</p>
+                <button type="button" class="cuenta-demo" th:each="c : ${cuentasDemo}"
+                        th:attr="data-correo=${c.correo},data-clave=${c.clave}">
+                    <span class="cuenta-correo" th:text="${c.correo}">correo</span>
+                    <span class="cuenta-detalle" th:text="${c.descripcion + ' · clave ' + c.clave}">detalle</span>
+                </button>
+            </details>
+        </div>
+    </div>
+<script>
+    document.querySelectorAll('.cuenta-demo').forEach(function (b) {
+        b.addEventListener('click', function () {
+            document.getElementById('username').value = b.dataset.correo;
+            document.getElementById('password').value = b.dataset.clave;
+            document.getElementById('password').focus();
+        });
+    });
+</script>
+</body>
+</html>

@@ -13,6 +13,9 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
+import com.sena.cipa.modelo.enums.EstadoFicha;
+import com.sena.cipa.modelo.enums.Jornada;
+
 @Entity
 @Table(name = "fichas")
 public class Ficha {

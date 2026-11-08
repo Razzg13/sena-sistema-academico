@@ -12,27 +12,27 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.sena.cipa.modelo.EstadoFicha;
+import com.sena.cipa.dao.FichaDao;
+import com.sena.cipa.dao.ProgramaDao;
 import com.sena.cipa.modelo.Ficha;
-import com.sena.cipa.modelo.Jornada;
-import com.sena.cipa.repositorio.FichaRepository;
-import com.sena.cipa.repositorio.ProgramaRepository;
+import com.sena.cipa.modelo.enums.EstadoFicha;
+import com.sena.cipa.modelo.enums.Jornada;
 
 @Controller
 @RequestMapping("/fichas")
 public class FichaController {
 
-    private final FichaRepository fichaRepository;
-    private final ProgramaRepository programaRepository;
+    private final FichaDao fichaDao;
+    private final ProgramaDao programaDao;
 
-    public FichaController(FichaRepository fichaRepository, ProgramaRepository programaRepository) {
-        this.fichaRepository = fichaRepository;
-        this.programaRepository = programaRepository;
+    public FichaController(FichaDao fichaDao, ProgramaDao programaDao) {
+        this.fichaDao = fichaDao;
+        this.programaDao = programaDao;
     }
 
     @GetMapping
     public String listado(Model model) {
-        model.addAttribute("fichas", fichaRepository.findAll());
+        model.addAttribute("fichas", fichaDao.findAll());
         return "ficha/listado";
     }
 
@@ -45,13 +45,13 @@ public class FichaController {
 
     @GetMapping("/{id}/editar")
     public String editar(@PathVariable Long id, Model model) {
-        model.addAttribute("ficha", fichaRepository.findById(id).orElseThrow());
+        model.addAttribute("ficha", fichaDao.findById(id).orElseThrow());
         agregarListas(model);
         return "ficha/formulario";
     }
 
     private void agregarListas(Model model) {
-        model.addAttribute("programas", programaRepository.findAll());
+        model.addAttribute("programas", programaDao.findAll());
         model.addAttribute("jornadas", Jornada.values());
         model.addAttribute("estados", EstadoFicha.values());
     }
@@ -66,14 +66,14 @@ public class FichaController {
         if (ficha.getEstado() == null) {
             ficha.setEstado(EstadoFicha.EN_EJECUCION);
         }
-        fichaRepository.save(ficha);
+        fichaDao.save(ficha);
         redirectAttributes.addFlashAttribute("mensaje", "Ficha guardada correctamente.");
         return "redirect:/fichas";
     }
 
     @PostMapping("/{id}/eliminar")
     public String eliminar(@PathVariable Long id, RedirectAttributes redirectAttributes) {
-        fichaRepository.deleteById(id);
+        fichaDao.deleteById(id);
         redirectAttributes.addFlashAttribute("mensaje", "Ficha eliminada.");
         return "redirect:/fichas";
     }

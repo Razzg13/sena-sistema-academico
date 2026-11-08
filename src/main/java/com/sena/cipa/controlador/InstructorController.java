@@ -12,34 +12,34 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.sena.cipa.dao.AsignacionInstructorDao;
+import com.sena.cipa.dao.FichaDao;
+import com.sena.cipa.dao.InstructorDao;
+import com.sena.cipa.dao.UsuarioDao;
 import com.sena.cipa.modelo.AsignacionInstructor;
 import com.sena.cipa.modelo.Instructor;
-import com.sena.cipa.modelo.RolNombre;
-import com.sena.cipa.repositorio.AsignacionInstructorRepository;
-import com.sena.cipa.repositorio.FichaRepository;
-import com.sena.cipa.repositorio.InstructorRepository;
-import com.sena.cipa.repositorio.UsuarioRepository;
+import com.sena.cipa.modelo.enums.RolNombre;
 
 @Controller
 @RequestMapping("/instructores")
 public class InstructorController {
 
-    private final InstructorRepository instructorRepository;
-    private final UsuarioRepository usuarioRepository;
-    private final AsignacionInstructorRepository asignacionRepository;
-    private final FichaRepository fichaRepository;
+    private final InstructorDao instructorDao;
+    private final UsuarioDao usuarioDao;
+    private final AsignacionInstructorDao asignacionDao;
+    private final FichaDao fichaDao;
 
-    public InstructorController(InstructorRepository instructorRepository, UsuarioRepository usuarioRepository,
-                                 AsignacionInstructorRepository asignacionRepository, FichaRepository fichaRepository) {
-        this.instructorRepository = instructorRepository;
-        this.usuarioRepository = usuarioRepository;
-        this.asignacionRepository = asignacionRepository;
-        this.fichaRepository = fichaRepository;
+    public InstructorController(InstructorDao instructorDao, UsuarioDao usuarioDao,
+                                 AsignacionInstructorDao asignacionDao, FichaDao fichaDao) {
+        this.instructorDao = instructorDao;
+        this.usuarioDao = usuarioDao;
+        this.asignacionDao = asignacionDao;
+        this.fichaDao = fichaDao;
     }
 
     @GetMapping
     public String listado(Model model) {
-        model.addAttribute("instructores", instructorRepository.findAll());
+        model.addAttribute("instructores", instructorDao.findAll());
         return "instructor/listado";
     }
 
@@ -51,9 +51,9 @@ public class InstructorController {
     }
 
     private void agregarUsuariosDisponibles(Model model) {
-        model.addAttribute("usuarios", usuarioRepository.findAll().stream()
+        model.addAttribute("usuarios", usuarioDao.findAll().stream()
                 .filter(u -> u.getRol() == RolNombre.INSTRUCTOR)
-                .filter(u -> !instructorRepository.existsByUsuarioId(u.getId()))
+                .filter(u -> !instructorDao.existsByUsuarioId(u.getId()))
                 .toList());
     }
 
@@ -64,16 +64,16 @@ public class InstructorController {
             agregarUsuariosDisponibles(model);
             return "instructor/formulario";
         }
-        instructorRepository.save(instructor);
+        instructorDao.save(instructor);
         redirectAttributes.addFlashAttribute("mensaje", "Instructor guardado correctamente.");
         return "redirect:/instructores";
     }
 
     @GetMapping("/{id}")
     public String detalle(@PathVariable Long id, Model model) {
-        model.addAttribute("instructor", instructorRepository.findById(id).orElseThrow());
-        model.addAttribute("asignaciones", asignacionRepository.findByInstructorId(id));
-        model.addAttribute("fichas", fichaRepository.findAll());
+        model.addAttribute("instructor", instructorDao.findById(id).orElseThrow());
+        model.addAttribute("asignaciones", asignacionDao.findByInstructorId(id));
+        model.addAttribute("fichas", fichaDao.findAll());
         model.addAttribute("nuevaAsignacion", new AsignacionInstructor());
         return "instructor/detalle";
     }
@@ -81,18 +81,18 @@ public class InstructorController {
     @PostMapping("/{id}/asignaciones")
     public String asignar(@PathVariable Long id, @ModelAttribute AsignacionInstructor nuevaAsignacion,
                            RedirectAttributes redirectAttributes) {
-        Instructor instructor = instructorRepository.findById(id).orElseThrow();
+        Instructor instructor = instructorDao.findById(id).orElseThrow();
         nuevaAsignacion.setInstructor(instructor);
-        asignacionRepository.save(nuevaAsignacion);
+        asignacionDao.save(nuevaAsignacion);
         redirectAttributes.addFlashAttribute("mensaje", "Asignacion registrada.");
         return "redirect:/instructores/" + id;
     }
 
     @PostMapping("/asignaciones/{asignacionId}/eliminar")
     public String eliminarAsignacion(@PathVariable Long asignacionId, RedirectAttributes redirectAttributes) {
-        AsignacionInstructor asignacion = asignacionRepository.findById(asignacionId).orElseThrow();
+        AsignacionInstructor asignacion = asignacionDao.findById(asignacionId).orElseThrow();
         Long instructorId = asignacion.getInstructor().getId();
-        asignacionRepository.deleteById(asignacionId);
+        asignacionDao.deleteById(asignacionId);
         redirectAttributes.addFlashAttribute("mensaje", "Asignacion eliminada.");
         return "redirect:/instructores/" + instructorId;
     }

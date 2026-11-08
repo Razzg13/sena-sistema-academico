@@ -1,0 +1,19 @@
+package com.sena.cipa.dao;
+
+import java.time.LocalDate;
+import java.util.Collection;
+import java.util.List;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.sena.cipa.modelo.SesionFormacion;
+
+public interface SesionFormacionDao extends JpaRepository<SesionFormacion, Long> {
+
+    List<SesionFormacion> findByFichaId(Long fichaId);
+
+    List<SesionFormacion> findByFichaIdInOrderByFechaDesc(Collection<Long> fichaIds);
+
+    List<SesionFormacion> findByFichaIdInAndFechaGreaterThanEqualOrderByFechaAscHoraInicioAsc(
+            Collection<Long> fichaIds, LocalDate desde);
+}

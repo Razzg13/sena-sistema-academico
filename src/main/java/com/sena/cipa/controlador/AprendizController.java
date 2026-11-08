@@ -12,35 +12,35 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.sena.cipa.dao.AprendizDao;
+import com.sena.cipa.dao.FichaDao;
+import com.sena.cipa.dao.MatriculaDao;
+import com.sena.cipa.dao.UsuarioDao;
 import com.sena.cipa.modelo.Aprendiz;
-import com.sena.cipa.modelo.EstadoFormativo;
 import com.sena.cipa.modelo.Matricula;
-import com.sena.cipa.modelo.RolNombre;
-import com.sena.cipa.repositorio.AprendizRepository;
-import com.sena.cipa.repositorio.FichaRepository;
-import com.sena.cipa.repositorio.MatriculaRepository;
-import com.sena.cipa.repositorio.UsuarioRepository;
+import com.sena.cipa.modelo.enums.EstadoFormativo;
+import com.sena.cipa.modelo.enums.RolNombre;
 
 @Controller
 @RequestMapping("/aprendices")
 public class AprendizController {
 
-    private final AprendizRepository aprendizRepository;
-    private final UsuarioRepository usuarioRepository;
-    private final MatriculaRepository matriculaRepository;
-    private final FichaRepository fichaRepository;
+    private final AprendizDao aprendizDao;
+    private final UsuarioDao usuarioDao;
+    private final MatriculaDao matriculaDao;
+    private final FichaDao fichaDao;
 
-    public AprendizController(AprendizRepository aprendizRepository, UsuarioRepository usuarioRepository,
-                               MatriculaRepository matriculaRepository, FichaRepository fichaRepository) {
-        this.aprendizRepository = aprendizRepository;
-        this.usuarioRepository = usuarioRepository;
-        this.matriculaRepository = matriculaRepository;
-        this.fichaRepository = fichaRepository;
+    public AprendizController(AprendizDao aprendizDao, UsuarioDao usuarioDao,
+                               MatriculaDao matriculaDao, FichaDao fichaDao) {
+        this.aprendizDao = aprendizDao;
+        this.usuarioDao = usuarioDao;
+        this.matriculaDao = matriculaDao;
+        this.fichaDao = fichaDao;
     }
 
     @GetMapping
     public String listado(Model model) {
-        model.addAttribute("aprendices", aprendizRepository.findAll());
+        model.addAttribute("aprendices", aprendizDao.findAll());
         return "aprendiz/listado";
     }
 
@@ -53,9 +53,9 @@ public class AprendizController {
     }
 
     private void agregarUsuariosDisponibles(Model model) {
-        model.addAttribute("usuarios", usuarioRepository.findAll().stream()
+        model.addAttribute("usuarios", usuarioDao.findAll().stream()
                 .filter(u -> u.getRol() == RolNombre.APRENDIZ)
-                .filter(u -> !aprendizRepository.existsByUsuarioId(u.getId()))
+                .filter(u -> !aprendizDao.existsByUsuarioId(u.getId()))
                 .toList());
     }
 
@@ -67,16 +67,16 @@ public class AprendizController {
             model.addAttribute("estadosFormativos", EstadoFormativo.values());
             return "aprendiz/formulario";
         }
-        aprendizRepository.save(aprendiz);
+        aprendizDao.save(aprendiz);
         redirectAttributes.addFlashAttribute("mensaje", "Aprendiz guardado correctamente.");
         return "redirect:/aprendices";
     }
 
     @GetMapping("/{id}")
     public String detalle(@PathVariable Long id, Model model) {
-        model.addAttribute("aprendiz", aprendizRepository.findById(id).orElseThrow());
-        model.addAttribute("matriculas", matriculaRepository.findByAprendizId(id));
-        model.addAttribute("fichas", fichaRepository.findAll());
+        model.addAttribute("aprendiz", aprendizDao.findById(id).orElseThrow());
+        model.addAttribute("matriculas", matriculaDao.findByAprendizId(id));
+        model.addAttribute("fichas", fichaDao.findAll());
         model.addAttribute("nuevaMatricula", new Matricula());
         return "aprendiz/detalle";
     }
@@ -84,18 +84,18 @@ public class AprendizController {
     @PostMapping("/{id}/matriculas")
     public String matricular(@PathVariable Long id, @ModelAttribute Matricula nuevaMatricula,
                               RedirectAttributes redirectAttributes) {
-        Aprendiz aprendiz = aprendizRepository.findById(id).orElseThrow();
+        Aprendiz aprendiz = aprendizDao.findById(id).orElseThrow();
         nuevaMatricula.setAprendiz(aprendiz);
-        matriculaRepository.save(nuevaMatricula);
+        matriculaDao.save(nuevaMatricula);
         redirectAttributes.addFlashAttribute("mensaje", "Matricula registrada.");
         return "redirect:/aprendices/" + id;
     }
 
     @PostMapping("/matriculas/{matriculaId}/eliminar")
     public String eliminarMatricula(@PathVariable Long matriculaId, RedirectAttributes redirectAttributes) {
-        Matricula matricula = matriculaRepository.findById(matriculaId).orElseThrow();
+        Matricula matricula = matriculaDao.findById(matriculaId).orElseThrow();
         Long aprendizId = matricula.getAprendiz().getId();
-        matriculaRepository.deleteById(matriculaId);
+        matriculaDao.deleteById(matriculaId);
         redirectAttributes.addFlashAttribute("mensaje", "Matricula eliminada.");
         return "redirect:/aprendices/" + aprendizId;
     }

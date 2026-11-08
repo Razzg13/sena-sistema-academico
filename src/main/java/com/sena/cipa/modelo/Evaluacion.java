@@ -14,6 +14,8 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
+import com.sena.cipa.modelo.enums.JuicioEvaluacion;
+
 @Entity
 @Table(name = "evaluaciones")
 public class Evaluacion {

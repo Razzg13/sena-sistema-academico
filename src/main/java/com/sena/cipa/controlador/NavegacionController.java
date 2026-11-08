@@ -5,6 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import com.sena.cipa.config.CuentasDemo;
 import com.sena.cipa.seguridad.UsuarioPrincipal;
 import com.sena.cipa.servicio.DashboardService;
 
@@ -12,13 +13,16 @@ import com.sena.cipa.servicio.DashboardService;
 public class NavegacionController {
 
     private final DashboardService dashboardService;
+    private final CuentasDemo cuentasDemo;
 
-    public NavegacionController(DashboardService dashboardService) {
+    public NavegacionController(DashboardService dashboardService, CuentasDemo cuentasDemo) {
         this.dashboardService = dashboardService;
+        this.cuentasDemo = cuentasDemo;
     }
 
     @GetMapping("/login")
-    public String login() {
+    public String login(Model model) {
+        model.addAttribute("cuentasDemo", cuentasDemo.visibles());
         return "login";
     }
 

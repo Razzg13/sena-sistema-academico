@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.sena.cipa.modelo.JuicioEvaluacion;
+import com.sena.cipa.modelo.enums.JuicioEvaluacion;
 
 public class CalificarForm {
 

@@ -16,6 +16,18 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import com.sena.cipa.dao.ActividadEvaluativaDao;
+import com.sena.cipa.dao.AprendizDao;
+import com.sena.cipa.dao.AsignacionInstructorDao;
+import com.sena.cipa.dao.AsistenciaDao;
+import com.sena.cipa.dao.EntregaDao;
+import com.sena.cipa.dao.EvaluacionDao;
+import com.sena.cipa.dao.FichaDao;
+import com.sena.cipa.dao.InstructorDao;
+import com.sena.cipa.dao.MatriculaDao;
+import com.sena.cipa.dao.ProgramaDao;
+import com.sena.cipa.dao.SesionFormacionDao;
+import com.sena.cipa.dao.UsuarioDao;
 import com.sena.cipa.dto.Dashboard.Item;
 import com.sena.cipa.dto.Dashboard.Lista;
 import com.sena.cipa.dto.Dashboard.Medidor;
@@ -25,32 +37,20 @@ import com.sena.cipa.modelo.ActividadEvaluativa;
 import com.sena.cipa.modelo.Aprendiz;
 import com.sena.cipa.modelo.Asistencia;
 import com.sena.cipa.modelo.Entrega;
-import com.sena.cipa.modelo.EstadoActividad;
-import com.sena.cipa.modelo.EstadoAsistencia;
-import com.sena.cipa.modelo.EstadoFicha;
-import com.sena.cipa.modelo.EstadoFormativo;
-import com.sena.cipa.modelo.EstadoGeneral;
-import com.sena.cipa.modelo.EstadoMatricula;
 import com.sena.cipa.modelo.Evaluacion;
 import com.sena.cipa.modelo.Ficha;
 import com.sena.cipa.modelo.Instructor;
-import com.sena.cipa.modelo.JuicioEvaluacion;
 import com.sena.cipa.modelo.Matricula;
-import com.sena.cipa.modelo.RolNombre;
 import com.sena.cipa.modelo.SesionFormacion;
 import com.sena.cipa.modelo.Usuario;
-import com.sena.cipa.repositorio.ActividadEvaluativaRepository;
-import com.sena.cipa.repositorio.AprendizRepository;
-import com.sena.cipa.repositorio.AsignacionInstructorRepository;
-import com.sena.cipa.repositorio.AsistenciaRepository;
-import com.sena.cipa.repositorio.EntregaRepository;
-import com.sena.cipa.repositorio.EvaluacionRepository;
-import com.sena.cipa.repositorio.FichaRepository;
-import com.sena.cipa.repositorio.InstructorRepository;
-import com.sena.cipa.repositorio.MatriculaRepository;
-import com.sena.cipa.repositorio.ProgramaRepository;
-import com.sena.cipa.repositorio.SesionFormacionRepository;
-import com.sena.cipa.repositorio.UsuarioRepository;
+import com.sena.cipa.modelo.enums.EstadoActividad;
+import com.sena.cipa.modelo.enums.EstadoAsistencia;
+import com.sena.cipa.modelo.enums.EstadoFicha;
+import com.sena.cipa.modelo.enums.EstadoFormativo;
+import com.sena.cipa.modelo.enums.EstadoGeneral;
+import com.sena.cipa.modelo.enums.EstadoMatricula;
+import com.sena.cipa.modelo.enums.JuicioEvaluacion;
+import com.sena.cipa.modelo.enums.RolNombre;
 import com.sena.cipa.util.Fechas;
 
 @Service
@@ -60,39 +60,39 @@ public class DashboardService {
     private static final DateTimeFormatter DIA = DateTimeFormatter.ofPattern("dd/MM");
     private static final DateTimeFormatter DIA_HORA = DateTimeFormatter.ofPattern("dd/MM HH:mm");
 
-    private final UsuarioRepository usuarioRepository;
-    private final ProgramaRepository programaRepository;
-    private final FichaRepository fichaRepository;
-    private final AprendizRepository aprendizRepository;
-    private final InstructorRepository instructorRepository;
-    private final AsignacionInstructorRepository asignacionRepository;
-    private final MatriculaRepository matriculaRepository;
-    private final SesionFormacionRepository sesionRepository;
-    private final AsistenciaRepository asistenciaRepository;
-    private final ActividadEvaluativaRepository actividadRepository;
-    private final EvaluacionRepository evaluacionRepository;
-    private final EntregaRepository entregaRepository;
+    private final UsuarioDao usuarioDao;
+    private final ProgramaDao programaDao;
+    private final FichaDao fichaDao;
+    private final AprendizDao aprendizDao;
+    private final InstructorDao instructorDao;
+    private final AsignacionInstructorDao asignacionDao;
+    private final MatriculaDao matriculaDao;
+    private final SesionFormacionDao sesionDao;
+    private final AsistenciaDao asistenciaDao;
+    private final ActividadEvaluativaDao actividadDao;
+    private final EvaluacionDao evaluacionDao;
+    private final EntregaDao entregaDao;
     private final AccesoFichaService acceso;
 
-    public DashboardService(UsuarioRepository usuarioRepository, ProgramaRepository programaRepository,
-                             FichaRepository fichaRepository, AprendizRepository aprendizRepository,
-                             InstructorRepository instructorRepository, AsignacionInstructorRepository asignacionRepository,
-                             MatriculaRepository matriculaRepository, SesionFormacionRepository sesionRepository,
-                             AsistenciaRepository asistenciaRepository, ActividadEvaluativaRepository actividadRepository,
-                             EvaluacionRepository evaluacionRepository, EntregaRepository entregaRepository,
+    public DashboardService(UsuarioDao usuarioDao, ProgramaDao programaDao,
+                             FichaDao fichaDao, AprendizDao aprendizDao,
+                             InstructorDao instructorDao, AsignacionInstructorDao asignacionDao,
+                             MatriculaDao matriculaDao, SesionFormacionDao sesionDao,
+                             AsistenciaDao asistenciaDao, ActividadEvaluativaDao actividadDao,
+                             EvaluacionDao evaluacionDao, EntregaDao entregaDao,
                              AccesoFichaService acceso) {
-        this.usuarioRepository = usuarioRepository;
-        this.programaRepository = programaRepository;
-        this.fichaRepository = fichaRepository;
-        this.aprendizRepository = aprendizRepository;
-        this.instructorRepository = instructorRepository;
-        this.asignacionRepository = asignacionRepository;
-        this.matriculaRepository = matriculaRepository;
-        this.sesionRepository = sesionRepository;
-        this.asistenciaRepository = asistenciaRepository;
-        this.actividadRepository = actividadRepository;
-        this.evaluacionRepository = evaluacionRepository;
-        this.entregaRepository = entregaRepository;
+        this.usuarioDao = usuarioDao;
+        this.programaDao = programaDao;
+        this.fichaDao = fichaDao;
+        this.aprendizDao = aprendizDao;
+        this.instructorDao = instructorDao;
+        this.asignacionDao = asignacionDao;
+        this.matriculaDao = matriculaDao;
+        this.sesionDao = sesionDao;
+        this.asistenciaDao = asistenciaDao;
+        this.actividadDao = actividadDao;
+        this.evaluacionDao = evaluacionDao;
+        this.entregaDao = entregaDao;
         this.acceso = acceso;
     }
 
@@ -109,24 +109,24 @@ public class DashboardService {
     // ---------------------------------------------------------------- administrador
 
     private Dashboard administrador() {
-        long cuentas = usuarioRepository.count();
+        long cuentas = usuarioDao.count();
         List<Metrica> metricas = List.of(
-                new Metrica(String.valueOf(usuarioRepository.countByEstado(EstadoGeneral.ACTIVO)), "Usuarios activos",
+                new Metrica(String.valueOf(usuarioDao.countByEstado(EstadoGeneral.ACTIVO)), "Usuarios activos",
                         "de " + cuentas + " cuentas", ""),
-                new Metrica(String.valueOf(fichaRepository.countByEstado(EstadoFicha.EN_EJECUCION)), "Fichas en ejecucion",
-                        "de " + fichaRepository.count() + " fichas", ""),
-                new Metrica(String.valueOf(aprendizRepository.countByEstadoFormativo(EstadoFormativo.EN_FORMACION)),
-                        "Aprendices en formacion", "de " + aprendizRepository.count() + " registrados", ""),
-                new Metrica(String.valueOf(instructorRepository.countByEstado(EstadoGeneral.ACTIVO)), "Instructores activos",
+                new Metrica(String.valueOf(fichaDao.countByEstado(EstadoFicha.EN_EJECUCION)), "Fichas en ejecucion",
+                        "de " + fichaDao.count() + " fichas", ""),
+                new Metrica(String.valueOf(aprendizDao.countByEstadoFormativo(EstadoFormativo.EN_FORMACION)),
+                        "Aprendices en formacion", "de " + aprendizDao.count() + " registrados", ""),
+                new Metrica(String.valueOf(instructorDao.countByEstado(EstadoGeneral.ACTIVO)), "Instructores activos",
                         "", ""),
-                new Metrica(String.valueOf(matriculaRepository.countByEstado(EstadoMatricula.ACTIVA)), "Matriculas activas",
+                new Metrica(String.valueOf(matriculaDao.countByEstado(EstadoMatricula.ACTIVA)), "Matriculas activas",
                         "", ""),
-                new Metrica(String.valueOf(programaRepository.countByEstado(EstadoGeneral.ACTIVO)), "Programas activos",
+                new Metrica(String.valueOf(programaDao.countByEstado(EstadoGeneral.ACTIVO)), "Programas activos",
                         "", ""));
 
         List<Medidor> medidores = new ArrayList<>();
         for (RolNombre rol : RolNombre.values()) {
-            long total = usuarioRepository.countByRol(rol);
+            long total = usuarioDao.countByRol(rol);
             medidores.add(new Medidor(nombreRol(rol), porcentaje(total, cuentas), total + " cuenta(s)", ""));
         }
 
@@ -137,33 +137,33 @@ public class DashboardService {
     // ---------------------------------------------------------------- coordinacion
 
     private Dashboard coordinacion() {
-        List<Ficha> fichas = fichaRepository.findAll();
+        List<Ficha> fichas = fichaDao.findAll();
         long sinInstructor = fichasSinInstructor().size();
         List<Metrica> metricas = List.of(
-                new Metrica(String.valueOf(programaRepository.countByEstado(EstadoGeneral.ACTIVO)), "Programas activos", "", ""),
-                new Metrica(String.valueOf(fichaRepository.countByEstado(EstadoFicha.EN_EJECUCION)), "Fichas en ejecucion",
+                new Metrica(String.valueOf(programaDao.countByEstado(EstadoGeneral.ACTIVO)), "Programas activos", "", ""),
+                new Metrica(String.valueOf(fichaDao.countByEstado(EstadoFicha.EN_EJECUCION)), "Fichas en ejecucion",
                         "de " + fichas.size() + " fichas", ""),
-                new Metrica(String.valueOf(aprendizRepository.countByEstadoFormativo(EstadoFormativo.EN_FORMACION)),
+                new Metrica(String.valueOf(aprendizDao.countByEstadoFormativo(EstadoFormativo.EN_FORMACION)),
                         "Aprendices en formacion", "", ""),
-                new Metrica(String.valueOf(matriculaRepository.countByEstado(EstadoMatricula.ACTIVA)), "Matriculas activas", "", ""),
-                new Metrica(String.valueOf(instructorRepository.countByEstado(EstadoGeneral.ACTIVO)), "Instructores activos", "", ""),
+                new Metrica(String.valueOf(matriculaDao.countByEstado(EstadoMatricula.ACTIVA)), "Matriculas activas", "", ""),
+                new Metrica(String.valueOf(instructorDao.countByEstado(EstadoGeneral.ACTIVO)), "Instructores activos", "", ""),
                 new Metrica(String.valueOf(sinInstructor), "Fichas sin instructor",
                         sinInstructor == 0 ? "Todas cubiertas" : "En ejecucion y sin asignar", sinInstructor == 0 ? "ok" : "alerta"));
 
         List<Medidor> medidores = new ArrayList<>();
         for (EstadoFicha estado : EstadoFicha.values()) {
-            long total = fichaRepository.countByEstado(estado);
+            long total = fichaDao.countByEstado(estado);
             medidores.add(new Medidor("Fichas " + legible(estado.name()), porcentaje(total, fichas.size()), total + " ficha(s)", ""));
         }
-        long registrados = aprendizRepository.count();
+        long registrados = aprendizDao.count();
         for (EstadoFormativo estado : EstadoFormativo.values()) {
-            long total = aprendizRepository.countByEstadoFormativo(estado);
+            long total = aprendizDao.countByEstadoFormativo(estado);
             medidores.add(new Medidor("Aprendices " + legible(estado.name()), porcentaje(total, registrados),
                     total + " aprendiz(ces)", ""));
         }
 
         LocalDate hoy = Fechas.hoy();
-        List<Item> terminando = fichaRepository.findByEstado(EstadoFicha.EN_EJECUCION).stream()
+        List<Item> terminando = fichaDao.findByEstado(EstadoFicha.EN_EJECUCION).stream()
                 .filter(f -> f.getFechaFin() != null && !f.getFechaFin().isBefore(hoy) && !f.getFechaFin().isAfter(hoy.plusDays(60)))
                 .sorted(Comparator.comparing(Ficha::getFechaFin))
                 .limit(MAX_ITEMS)
@@ -180,7 +180,7 @@ public class DashboardService {
     // ---------------------------------------------------------------- instructor
 
     private Dashboard instructor(Usuario usuario) {
-        Optional<Instructor> perfil = instructorRepository.findByUsuarioId(usuario.getId());
+        Optional<Instructor> perfil = instructorDao.findByUsuarioId(usuario.getId());
         if (perfil.isEmpty()) {
             return sinContenido("Tu resumen", "Tu cuenta todavia no tiene un perfil de instructor asociado. "
                     + "Contacta al administrador o a coordinacion academica para que lo cree.");
@@ -192,12 +192,12 @@ public class DashboardService {
         }
 
         LocalDate hoy = Fechas.hoy();
-        List<Matricula> matriculas = matriculaRepository.findByFichaIdInAndEstado(fichaIds, EstadoMatricula.ACTIVA);
+        List<Matricula> matriculas = matriculaDao.findByFichaIdInAndEstado(fichaIds, EstadoMatricula.ACTIVA);
         Map<Long, Long> matriculadosPorFicha = matriculas.stream()
                 .collect(Collectors.groupingBy(m -> m.getFicha().getId(), Collectors.counting()));
-        List<ActividadEvaluativa> actividades = actividadRepository.findByFichaIdIn(fichaIds);
-        List<Entrega> entregas = entregaRepository.findByActividadFichaIdIn(fichaIds);
-        List<Evaluacion> evaluaciones = evaluacionRepository.findByActividadFichaIdIn(fichaIds);
+        List<ActividadEvaluativa> actividades = actividadDao.findByFichaIdIn(fichaIds);
+        List<Entrega> entregas = entregaDao.findByActividadFichaIdIn(fichaIds);
+        List<Evaluacion> evaluaciones = evaluacionDao.findByActividadFichaIdIn(fichaIds);
 
         Set<String> calificadas = evaluaciones.stream().filter(e -> e.getCalificacion() != null)
                 .map(e -> clave(e.getActividad().getId(), e.getMatricula().getId())).collect(Collectors.toSet());
@@ -207,7 +207,7 @@ public class DashboardService {
                 .toList();
 
         List<ActividadEvaluativa> vigentes = actividades.stream().filter(a -> !a.getFechaLimite().isBefore(hoy)).toList();
-        List<SesionFormacion> proximas = sesionRepository
+        List<SesionFormacion> proximas = sesionDao
                 .findByFichaIdInAndFechaGreaterThanEqualOrderByFechaAscHoraInicioAsc(fichaIds, hoy);
         long proximasSemana = proximas.stream().filter(s -> !s.getFecha().isAfter(hoy.plusDays(7))).count();
 
@@ -221,7 +221,7 @@ public class DashboardService {
 
         List<Medidor> medidores = new ArrayList<>();
         medidores.add(medidorAsistencia("Asistencia promedio de tus fichas",
-                asistenciaRepository.findBySesionFichaIdIn(fichaIds)));
+                asistenciaDao.findBySesionFichaIdIn(fichaIds)));
 
         long esperadas = vigentes.stream().mapToLong(a -> matriculadosPorFicha.getOrDefault(a.getFicha().getId(), 0L)).sum();
         Set<Long> idsVigentes = vigentes.stream().map(ActividadEvaluativa::getId).collect(Collectors.toSet());
@@ -267,12 +267,12 @@ public class DashboardService {
     // ---------------------------------------------------------------- aprendiz
 
     private Dashboard aprendiz(Usuario usuario) {
-        Optional<Aprendiz> perfil = aprendizRepository.findByUsuarioId(usuario.getId());
+        Optional<Aprendiz> perfil = aprendizDao.findByUsuarioId(usuario.getId());
         if (perfil.isEmpty()) {
             return sinContenido("Tu resumen", "Tu cuenta todavia no tiene un perfil de aprendiz asociado. "
                     + "Contacta al administrador o a coordinacion academica para que lo cree.");
         }
-        List<Matricula> activas = matriculaRepository.findByAprendizId(perfil.get().getId()).stream()
+        List<Matricula> activas = matriculaDao.findByAprendizId(perfil.get().getId()).stream()
                 .filter(m -> m.getEstado() == EstadoMatricula.ACTIVA).toList();
         if (activas.isEmpty()) {
             return sinContenido("Tu resumen", "No tienes una matricula activa en este momento. "
@@ -282,9 +282,9 @@ public class DashboardService {
         LocalDate hoy = Fechas.hoy();
         List<Long> matriculaIds = activas.stream().map(Matricula::getId).toList();
         Set<Long> fichaIds = activas.stream().map(m -> m.getFicha().getId()).collect(Collectors.toSet());
-        Map<String, Entrega> entregas = entregaRepository.findByMatriculaIdIn(matriculaIds).stream()
+        Map<String, Entrega> entregas = entregaDao.findByMatriculaIdIn(matriculaIds).stream()
                 .collect(Collectors.toMap(e -> clave(e.getActividad().getId(), e.getMatricula().getId()), Function.identity()));
-        List<Evaluacion> evaluacionesLista = evaluacionRepository.findByMatriculaIdIn(matriculaIds);
+        List<Evaluacion> evaluacionesLista = evaluacionDao.findByMatriculaIdIn(matriculaIds);
         Map<String, Evaluacion> evaluaciones = evaluacionesLista.stream()
                 .collect(Collectors.toMap(e -> clave(e.getActividad().getId(), e.getMatricula().getId()), Function.identity()));
 
@@ -292,7 +292,7 @@ public class DashboardService {
         }
         List<Fila> filas = new ArrayList<>();
         for (Matricula matricula : activas) {
-            for (ActividadEvaluativa actividad : actividadRepository.findByFichaId(matricula.getFicha().getId())) {
+            for (ActividadEvaluativa actividad : actividadDao.findByFichaId(matricula.getFicha().getId())) {
                 String k = clave(actividad.getId(), matricula.getId());
                 filas.add(new Fila(actividad, EstadoActividad.de(actividad, entregas.get(k), evaluaciones.get(k), hoy)));
             }
@@ -307,7 +307,7 @@ public class DashboardService {
                 .reduce(BigDecimal.ZERO, BigDecimal::add)
                 .divide(BigDecimal.valueOf(calificadas.size()), 2, RoundingMode.HALF_UP).toPlainString();
 
-        List<Asistencia> asistencias = asistenciaRepository.findByMatriculaIdIn(matriculaIds);
+        List<Asistencia> asistencias = asistenciaDao.findByMatriculaIdIn(matriculaIds);
         Medidor medidorAsistencia = medidorAsistencia("Tu asistencia", asistencias);
 
         List<Metrica> metricas = List.of(
@@ -343,7 +343,7 @@ public class DashboardService {
                         "/mis-actividades/" + e.getActividad().getId()))
                 .toList();
 
-        List<Item> sesiones = sesionRepository
+        List<Item> sesiones = sesionDao
                 .findByFichaIdInAndFechaGreaterThanEqualOrderByFechaAscHoraInicioAsc(fichaIds, hoy).stream()
                 .limit(MAX_ITEMS)
                 .map(s -> new Item(s.getTema(), "Ficha " + s.getFicha().getNumero() + " · " + DIA.format(s.getFecha())
@@ -359,16 +359,16 @@ public class DashboardService {
     // ---------------------------------------------------------------- auditor
 
     private Dashboard auditor() {
-        List<Asistencia> asistencias = asistenciaRepository.findAll();
-        List<Evaluacion> evaluaciones = evaluacionRepository.findAll();
+        List<Asistencia> asistencias = asistenciaDao.findAll();
+        List<Evaluacion> evaluaciones = evaluacionDao.findAll();
         Medidor global = medidorAsistencia("Asistencia global", asistencias);
         long aprobadas = evaluaciones.stream().filter(e -> e.getJuicio() == JuicioEvaluacion.APROBADO).count();
 
         List<Metrica> metricas = List.of(
-                new Metrica(String.valueOf(programaRepository.count()), "Programas", "", ""),
-                new Metrica(String.valueOf(fichaRepository.count()), "Fichas", fichaRepository.countByEstado(EstadoFicha.EN_EJECUCION) + " en ejecucion", ""),
-                new Metrica(String.valueOf(aprendizRepository.count()), "Aprendices", "", ""),
-                new Metrica(String.valueOf(instructorRepository.count()), "Instructores", "", ""),
+                new Metrica(String.valueOf(programaDao.count()), "Programas", "", ""),
+                new Metrica(String.valueOf(fichaDao.count()), "Fichas", fichaDao.countByEstado(EstadoFicha.EN_EJECUCION) + " en ejecucion", ""),
+                new Metrica(String.valueOf(aprendizDao.count()), "Aprendices", "", ""),
+                new Metrica(String.valueOf(instructorDao.count()), "Instructores", "", ""),
                 new Metrica(global.detalle().startsWith("Sin") ? "-" : global.porcentaje() + "%", "Asistencia global",
                         global.detalle(), global.tono()),
                 new Metrica(evaluaciones.isEmpty() ? "-" : porcentaje(aprobadas, evaluaciones.size()) + "%", "Aprobacion global",
@@ -405,8 +405,8 @@ public class DashboardService {
     // ---------------------------------------------------------------- listas compartidas
 
     private List<Ficha> fichasSinInstructor() {
-        return fichaRepository.findByEstado(EstadoFicha.EN_EJECUCION).stream()
-                .filter(f -> asignacionRepository.findByFichaId(f.getId()).isEmpty())
+        return fichaDao.findByEstado(EstadoFicha.EN_EJECUCION).stream()
+                .filter(f -> asignacionDao.findByFichaId(f.getId()).isEmpty())
                 .toList();
     }
 
@@ -420,14 +420,14 @@ public class DashboardService {
 
     private Lista listaCuentasSinPerfil() {
         List<Item> items = new ArrayList<>();
-        for (Usuario u : usuarioRepository.findAll()) {
+        for (Usuario u : usuarioDao.findAll()) {
             if (u.getEstado() != EstadoGeneral.ACTIVO) {
                 continue;
             }
-            if (u.getRol() == RolNombre.APRENDIZ && !aprendizRepository.existsByUsuarioId(u.getId())) {
+            if (u.getRol() == RolNombre.APRENDIZ && !aprendizDao.existsByUsuarioId(u.getId())) {
                 items.add(new Item(u.getNombreCompleto(), u.getCorreo(), "Sin perfil de aprendiz", "estado-pendiente",
                         "/aprendices/nuevo"));
-            } else if (u.getRol() == RolNombre.INSTRUCTOR && !instructorRepository.existsByUsuarioId(u.getId())) {
+            } else if (u.getRol() == RolNombre.INSTRUCTOR && !instructorDao.existsByUsuarioId(u.getId())) {
                 items.add(new Item(u.getNombreCompleto(), u.getCorreo(), "Sin perfil de instructor", "estado-pendiente",
                         "/instructores/nuevo"));
             }
@@ -438,7 +438,7 @@ public class DashboardService {
 
     private Lista listaActividadesPorVencer(Collection<Long> fichaIds) {
         LocalDate hoy = Fechas.hoy();
-        List<Item> items = actividadRepository.findByFechaLimiteBetweenOrderByFechaLimiteAsc(hoy, hoy.plusDays(7)).stream()
+        List<Item> items = actividadDao.findByFechaLimiteBetweenOrderByFechaLimiteAsc(hoy, hoy.plusDays(7)).stream()
                 .filter(a -> fichaIds == null || fichaIds.contains(a.getFicha().getId()))
                 .limit(MAX_ITEMS)
                 .map(a -> new Item(a.getNombre(), "Ficha " + a.getFicha().getNumero(), "Vence " + DIA.format(a.getFechaLimite()),

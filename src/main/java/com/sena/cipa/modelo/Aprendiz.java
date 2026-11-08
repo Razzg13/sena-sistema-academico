@@ -11,6 +11,9 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
+import com.sena.cipa.modelo.enums.EstadoFormativo;
+import com.sena.cipa.modelo.enums.EstadoGeneral;
+
 @Entity
 @Table(name = "aprendices")
 public class Aprendiz {

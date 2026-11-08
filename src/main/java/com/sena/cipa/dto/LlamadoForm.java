@@ -3,7 +3,7 @@ package com.sena.cipa.dto;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.sena.cipa.modelo.EstadoAsistencia;
+import com.sena.cipa.modelo.enums.EstadoAsistencia;
 
 public class LlamadoForm {
 

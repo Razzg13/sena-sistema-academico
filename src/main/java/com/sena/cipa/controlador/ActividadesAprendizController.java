@@ -26,21 +26,21 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.sena.cipa.dao.ActividadEvaluativaDao;
+import com.sena.cipa.dao.AprendizDao;
+import com.sena.cipa.dao.ArchivoEntregaDao;
+import com.sena.cipa.dao.EntregaDao;
+import com.sena.cipa.dao.EvaluacionDao;
+import com.sena.cipa.dao.MatriculaDao;
 import com.sena.cipa.excepcion.NegocioException;
 import com.sena.cipa.modelo.ActividadEvaluativa;
 import com.sena.cipa.modelo.Aprendiz;
 import com.sena.cipa.modelo.ArchivoEntrega;
 import com.sena.cipa.modelo.Entrega;
-import com.sena.cipa.modelo.EstadoActividad;
-import com.sena.cipa.modelo.EstadoMatricula;
 import com.sena.cipa.modelo.Evaluacion;
 import com.sena.cipa.modelo.Matricula;
-import com.sena.cipa.repositorio.ActividadEvaluativaRepository;
-import com.sena.cipa.repositorio.AprendizRepository;
-import com.sena.cipa.repositorio.ArchivoEntregaRepository;
-import com.sena.cipa.repositorio.EntregaRepository;
-import com.sena.cipa.repositorio.EvaluacionRepository;
-import com.sena.cipa.repositorio.MatriculaRepository;
+import com.sena.cipa.modelo.enums.EstadoActividad;
+import com.sena.cipa.modelo.enums.EstadoMatricula;
 import com.sena.cipa.seguridad.UsuarioPrincipal;
 import com.sena.cipa.util.Fechas;
 
@@ -52,23 +52,23 @@ public class ActividadesAprendizController {
             "txt", "zip", "png", "jpg", "jpeg");
     private static final DateTimeFormatter FORMATO_FECHA = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
-    private final AprendizRepository aprendizRepository;
-    private final MatriculaRepository matriculaRepository;
-    private final ActividadEvaluativaRepository actividadRepository;
-    private final EvaluacionRepository evaluacionRepository;
-    private final EntregaRepository entregaRepository;
-    private final ArchivoEntregaRepository archivoRepository;
+    private final AprendizDao aprendizDao;
+    private final MatriculaDao matriculaDao;
+    private final ActividadEvaluativaDao actividadDao;
+    private final EvaluacionDao evaluacionDao;
+    private final EntregaDao entregaDao;
+    private final ArchivoEntregaDao archivoDao;
 
-    public ActividadesAprendizController(AprendizRepository aprendizRepository, MatriculaRepository matriculaRepository,
-                                          ActividadEvaluativaRepository actividadRepository,
-                                          EvaluacionRepository evaluacionRepository, EntregaRepository entregaRepository,
-                                          ArchivoEntregaRepository archivoRepository) {
-        this.aprendizRepository = aprendizRepository;
-        this.matriculaRepository = matriculaRepository;
-        this.actividadRepository = actividadRepository;
-        this.evaluacionRepository = evaluacionRepository;
-        this.entregaRepository = entregaRepository;
-        this.archivoRepository = archivoRepository;
+    public ActividadesAprendizController(AprendizDao aprendizDao, MatriculaDao matriculaDao,
+                                          ActividadEvaluativaDao actividadDao,
+                                          EvaluacionDao evaluacionDao, EntregaDao entregaDao,
+                                          ArchivoEntregaDao archivoDao) {
+        this.aprendizDao = aprendizDao;
+        this.matriculaDao = matriculaDao;
+        this.actividadDao = actividadDao;
+        this.evaluacionDao = evaluacionDao;
+        this.entregaDao = entregaDao;
+        this.archivoDao = archivoDao;
     }
 
     public record FilaActividad(ActividadEvaluativa actividad, Matricula matricula, Entrega entrega,
@@ -77,7 +77,7 @@ public class ActividadesAprendizController {
 
     @GetMapping
     public String listado(@AuthenticationPrincipal UsuarioPrincipal principal, Model model) {
-        Optional<Aprendiz> aprendiz = aprendizRepository.findByUsuarioId(principal.getUsuario().getId());
+        Optional<Aprendiz> aprendiz = aprendizDao.findByUsuarioId(principal.getUsuario().getId());
         if (aprendiz.isEmpty()) {
             model.addAttribute("sinPerfil", true);
             return "aprendiz/mis-actividades";
@@ -144,16 +144,16 @@ public class ActividadesAprendizController {
             entrega.setTipoContenido(tipo == null ? "application/octet-stream" : tipo.substring(0, Math.min(tipo.length(), 150)));
             entrega.setTamanoBytes((long) contenido.length);
         }
-        entrega = entregaRepository.save(entrega);
+        entrega = entregaDao.save(entrega);
 
         if (contenido != null) {
-            ArchivoEntrega almacenado = archivoRepository.findById(entrega.getId()).orElse(null);
+            ArchivoEntrega almacenado = archivoDao.findById(entrega.getId()).orElse(null);
             if (almacenado == null) {
                 almacenado = new ArchivoEntrega(entrega, contenido);
             } else {
                 almacenado.setContenido(contenido);
             }
-            archivoRepository.save(almacenado);
+            archivoDao.save(almacenado);
         }
 
         redirectAttributes.addFlashAttribute("mensaje", fila.entrega() == null
@@ -163,35 +163,35 @@ public class ActividadesAprendizController {
     }
 
     private FilaActividad filaPropia(Long actividadId, UsuarioPrincipal principal) {
-        Aprendiz aprendiz = aprendizRepository.findByUsuarioId(principal.getUsuario().getId())
+        Aprendiz aprendiz = aprendizDao.findByUsuarioId(principal.getUsuario().getId())
                 .orElseThrow(() -> new AccessDeniedException("La cuenta no tiene perfil de aprendiz"));
-        ActividadEvaluativa actividad = actividadRepository.findById(actividadId).orElseThrow();
-        Matricula matricula = matriculaRepository.findByAprendizId(aprendiz.getId()).stream()
+        ActividadEvaluativa actividad = actividadDao.findById(actividadId).orElseThrow();
+        Matricula matricula = matriculaDao.findByAprendizId(aprendiz.getId()).stream()
                 .filter(m -> m.getEstado() == EstadoMatricula.ACTIVA)
                 .filter(m -> m.getFicha().getId().equals(actividad.getFicha().getId()))
                 .findFirst()
                 .orElseThrow(() -> new AccessDeniedException("La actividad no pertenece a una ficha activa del aprendiz"));
-        Entrega entrega = entregaRepository.findByActividadIdAndMatriculaId(actividadId, matricula.getId()).orElse(null);
-        Evaluacion evaluacion = evaluacionRepository.findByActividadIdAndMatriculaId(actividadId, matricula.getId()).orElse(null);
+        Entrega entrega = entregaDao.findByActividadIdAndMatriculaId(actividadId, matricula.getId()).orElse(null);
+        Evaluacion evaluacion = evaluacionDao.findByActividadIdAndMatriculaId(actividadId, matricula.getId()).orElse(null);
         return fila(actividad, matricula, entrega, evaluacion, Fechas.hoy());
     }
 
     private List<FilaActividad> filasDe(Aprendiz aprendiz) {
-        List<Matricula> activas = matriculaRepository.findByAprendizId(aprendiz.getId()).stream()
+        List<Matricula> activas = matriculaDao.findByAprendizId(aprendiz.getId()).stream()
                 .filter(m -> m.getEstado() == EstadoMatricula.ACTIVA).toList();
         if (activas.isEmpty()) {
             return List.of();
         }
         List<Long> matriculaIds = activas.stream().map(Matricula::getId).toList();
-        Map<String, Entrega> entregas = entregaRepository.findByMatriculaIdIn(matriculaIds).stream()
+        Map<String, Entrega> entregas = entregaDao.findByMatriculaIdIn(matriculaIds).stream()
                 .collect(Collectors.toMap(e -> e.getActividad().getId() + ":" + e.getMatricula().getId(), Function.identity()));
-        Map<String, Evaluacion> evaluaciones = evaluacionRepository.findByMatriculaIdIn(matriculaIds).stream()
+        Map<String, Evaluacion> evaluaciones = evaluacionDao.findByMatriculaIdIn(matriculaIds).stream()
                 .collect(Collectors.toMap(e -> e.getActividad().getId() + ":" + e.getMatricula().getId(), Function.identity()));
 
         LocalDate hoy = Fechas.hoy();
         List<FilaActividad> filas = new ArrayList<>();
         for (Matricula matricula : activas) {
-            for (ActividadEvaluativa actividad : actividadRepository.findByFichaId(matricula.getFicha().getId())) {
+            for (ActividadEvaluativa actividad : actividadDao.findByFichaId(matricula.getFicha().getId())) {
                 String clave = actividad.getId() + ":" + matricula.getId();
                 filas.add(fila(actividad, matricula, entregas.get(clave), evaluaciones.get(clave), hoy));
             }

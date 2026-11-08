@@ -4,7 +4,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
-import com.sena.cipa.modelo.RolNombre;
+import com.sena.cipa.modelo.enums.RolNombre;
 
 public class NuevoUsuarioForm {
 

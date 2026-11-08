@@ -11,6 +11,8 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
+import com.sena.cipa.modelo.enums.EstadoGeneral;
+
 @Entity
 @Table(name = "instructores")
 public class Instructor {
