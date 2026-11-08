@@ -30,7 +30,26 @@
                 </div>
                 <button type="submit" class="boton ancho-completo">Entrar</button>
             </form>
+
+            <details class="cuentas-demo" th:if="${!#lists.isEmpty(cuentasDemo)}" th:open="${param.error != null}">
+                <summary>Cuentas de prueba</summary>
+                <p class="texto-ayuda">Toca una cuenta para llenar el correo y la clave.</p>
+                <button type="button" class="cuenta-demo" th:each="c : ${cuentasDemo}"
+                        th:attr="data-correo=${c.correo},data-clave=${c.clave}">
+                    <span class="cuenta-correo" th:text="${c.correo}">correo</span>
+                    <span class="cuenta-detalle" th:text="${c.descripcion + ' · clave ' + c.clave}">detalle</span>
+                </button>
+            </details>
         </div>
     </div>
+<script>
+    document.querySelectorAll('.cuenta-demo').forEach(function (b) {
+        b.addEventListener('click', function () {
+            document.getElementById('username').value = b.dataset.correo;
+            document.getElementById('password').value = b.dataset.clave;
+            document.getElementById('password').focus();
+        });
+    });
+</script>
 </body>
 </html>
