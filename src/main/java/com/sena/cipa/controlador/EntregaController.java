@@ -14,11 +14,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.sena.cipa.dao.ArchivoEntregaDao;
+import com.sena.cipa.dao.EntregaDao;
 import com.sena.cipa.modelo.ArchivoEntrega;
 import com.sena.cipa.modelo.Entrega;
-import com.sena.cipa.modelo.RolNombre;
-import com.sena.cipa.repositorio.ArchivoEntregaRepository;
-import com.sena.cipa.repositorio.EntregaRepository;
+import com.sena.cipa.modelo.enums.RolNombre;
 import com.sena.cipa.seguridad.UsuarioPrincipal;
 import com.sena.cipa.servicio.AccesoFichaService;
 
@@ -26,20 +26,20 @@ import com.sena.cipa.servicio.AccesoFichaService;
 @RequestMapping("/entregas")
 public class EntregaController {
 
-    private final EntregaRepository entregaRepository;
-    private final ArchivoEntregaRepository archivoRepository;
+    private final EntregaDao entregaDao;
+    private final ArchivoEntregaDao archivoDao;
     private final AccesoFichaService acceso;
 
-    public EntregaController(EntregaRepository entregaRepository, ArchivoEntregaRepository archivoRepository,
+    public EntregaController(EntregaDao entregaDao, ArchivoEntregaDao archivoDao,
                               AccesoFichaService acceso) {
-        this.entregaRepository = entregaRepository;
-        this.archivoRepository = archivoRepository;
+        this.entregaDao = entregaDao;
+        this.archivoDao = archivoDao;
         this.acceso = acceso;
     }
 
     @GetMapping("/{id}/archivo")
     public ResponseEntity<byte[]> descargar(@PathVariable Long id, @AuthenticationPrincipal UsuarioPrincipal principal) {
-        Entrega entrega = entregaRepository.findById(id).orElseThrow();
+        Entrega entrega = entregaDao.findById(id).orElseThrow();
         RolNombre rol = principal.getUsuario().getRol();
         switch (rol) {
             case INSTRUCTOR -> acceso.exigirFicha(principal, entrega.getActividad().getFicha().getId());
@@ -55,7 +55,7 @@ public class EntregaController {
         if (!entrega.isTieneArchivo()) {
             throw new NoSuchElementException("La entrega no tiene archivo");
         }
-        ArchivoEntrega archivo = archivoRepository.findById(id).orElseThrow();
+        ArchivoEntrega archivo = archivoDao.findById(id).orElseThrow();
 
         MediaType tipo;
         try {

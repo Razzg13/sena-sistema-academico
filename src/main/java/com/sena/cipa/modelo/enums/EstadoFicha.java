@@ -1,4 +1,4 @@
-package com.sena.cipa.modelo;
+package com.sena.cipa.modelo.enums;
 
 public enum EstadoFicha {
     EN_EJECUCION,

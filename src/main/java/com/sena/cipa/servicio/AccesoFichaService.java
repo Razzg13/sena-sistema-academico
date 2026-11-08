@@ -7,10 +7,10 @@ import java.util.stream.Collectors;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
-import com.sena.cipa.modelo.RolNombre;
+import com.sena.cipa.dao.AsignacionInstructorDao;
+import com.sena.cipa.dao.InstructorDao;
 import com.sena.cipa.modelo.Usuario;
-import com.sena.cipa.repositorio.AsignacionInstructorRepository;
-import com.sena.cipa.repositorio.InstructorRepository;
+import com.sena.cipa.modelo.enums.RolNombre;
 import com.sena.cipa.seguridad.UsuarioPrincipal;
 
 /**
@@ -20,13 +20,13 @@ import com.sena.cipa.seguridad.UsuarioPrincipal;
 @Service
 public class AccesoFichaService {
 
-    private final InstructorRepository instructorRepository;
-    private final AsignacionInstructorRepository asignacionRepository;
+    private final InstructorDao instructorDao;
+    private final AsignacionInstructorDao asignacionDao;
 
-    public AccesoFichaService(InstructorRepository instructorRepository,
-                               AsignacionInstructorRepository asignacionRepository) {
-        this.instructorRepository = instructorRepository;
-        this.asignacionRepository = asignacionRepository;
+    public AccesoFichaService(InstructorDao instructorDao,
+                               AsignacionInstructorDao asignacionDao) {
+        this.instructorDao = instructorDao;
+        this.asignacionDao = asignacionDao;
     }
 
     public boolean esInstructor(UsuarioPrincipal principal) {
@@ -34,8 +34,8 @@ public class AccesoFichaService {
     }
 
     public Set<Long> fichasAsignadas(Usuario usuario) {
-        return instructorRepository.findByUsuarioId(usuario.getId())
-                .map(instructor -> asignacionRepository.findByInstructorId(instructor.getId()).stream()
+        return instructorDao.findByUsuarioId(usuario.getId())
+                .map(instructor -> asignacionDao.findByInstructorId(instructor.getId()).stream()
                         .map(asignacion -> asignacion.getFicha().getId())
                         .collect(Collectors.toSet()))
                 .orElseGet(Set::of);

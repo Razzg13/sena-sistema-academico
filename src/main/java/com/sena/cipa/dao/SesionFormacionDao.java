@@ -1,4 +1,4 @@
-package com.sena.cipa.repositorio;
+package com.sena.cipa.dao;
 
 import java.time.LocalDate;
 import java.util.Collection;
@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.sena.cipa.modelo.SesionFormacion;
 
-public interface SesionFormacionRepository extends JpaRepository<SesionFormacion, Long> {
+public interface SesionFormacionDao extends JpaRepository<SesionFormacion, Long> {
 
     List<SesionFormacion> findByFichaId(Long fichaId);
 

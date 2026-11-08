@@ -5,8 +5,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import com.sena.cipa.config.CuentasDemo;
 import com.sena.cipa.seguridad.UsuarioPrincipal;
-import com.sena.cipa.servicio.CuentasDemo;
 import com.sena.cipa.servicio.DashboardService;
 
 @Controller

@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.sena.cipa.dao.UsuarioDao;
 import com.sena.cipa.excepcion.NegocioException;
 import com.sena.cipa.modelo.Usuario;
-import com.sena.cipa.repositorio.UsuarioRepository;
 import com.sena.cipa.seguridad.UsuarioPrincipal;
 
 /** Cualquier usuario autenticado puede cambiar su propia clave. */
@@ -21,11 +21,11 @@ public class CuentaController {
 
     private static final String DESTINO = "/cuenta/clave";
 
-    private final UsuarioRepository usuarioRepository;
+    private final UsuarioDao usuarioDao;
     private final PasswordEncoder passwordEncoder;
 
-    public CuentaController(UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder) {
-        this.usuarioRepository = usuarioRepository;
+    public CuentaController(UsuarioDao usuarioDao, PasswordEncoder passwordEncoder) {
+        this.usuarioDao = usuarioDao;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -37,7 +37,7 @@ public class CuentaController {
     @PostMapping("/clave")
     public String cambiar(@RequestParam String actual, @RequestParam String nueva, @RequestParam String confirmacion,
                            @AuthenticationPrincipal UsuarioPrincipal principal, RedirectAttributes redirectAttributes) {
-        Usuario usuario = usuarioRepository.findById(principal.getUsuario().getId()).orElseThrow();
+        Usuario usuario = usuarioDao.findById(principal.getUsuario().getId()).orElseThrow();
         if (!passwordEncoder.matches(actual, usuario.getClave())) {
             throw new NegocioException("La clave actual no es correcta.", DESTINO);
         }
@@ -48,7 +48,7 @@ public class CuentaController {
             throw new NegocioException("La confirmacion no coincide con la clave nueva.", DESTINO);
         }
         usuario.setClave(passwordEncoder.encode(nueva));
-        usuarioRepository.save(usuario);
+        usuarioDao.save(usuario);
         redirectAttributes.addFlashAttribute("mensaje", "Clave actualizada. Usala la proxima vez que inicies sesion.");
         return "redirect:/inicio";
     }

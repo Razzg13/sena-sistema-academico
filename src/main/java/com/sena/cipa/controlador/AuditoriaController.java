@@ -8,34 +8,34 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.sena.cipa.dao.AprendizDao;
+import com.sena.cipa.dao.AsignacionInstructorDao;
+import com.sena.cipa.dao.FichaDao;
+import com.sena.cipa.dao.InstructorDao;
+import com.sena.cipa.dao.MatriculaDao;
+import com.sena.cipa.dao.ProgramaDao;
 import com.sena.cipa.modelo.Ficha;
-import com.sena.cipa.repositorio.AprendizRepository;
-import com.sena.cipa.repositorio.AsignacionInstructorRepository;
-import com.sena.cipa.repositorio.FichaRepository;
-import com.sena.cipa.repositorio.InstructorRepository;
-import com.sena.cipa.repositorio.MatriculaRepository;
-import com.sena.cipa.repositorio.ProgramaRepository;
 
 @Controller
 @RequestMapping("/auditoria")
 public class AuditoriaController {
 
-    private final ProgramaRepository programaRepository;
-    private final FichaRepository fichaRepository;
-    private final AprendizRepository aprendizRepository;
-    private final InstructorRepository instructorRepository;
-    private final MatriculaRepository matriculaRepository;
-    private final AsignacionInstructorRepository asignacionRepository;
+    private final ProgramaDao programaDao;
+    private final FichaDao fichaDao;
+    private final AprendizDao aprendizDao;
+    private final InstructorDao instructorDao;
+    private final MatriculaDao matriculaDao;
+    private final AsignacionInstructorDao asignacionDao;
 
-    public AuditoriaController(ProgramaRepository programaRepository, FichaRepository fichaRepository,
-                                AprendizRepository aprendizRepository, InstructorRepository instructorRepository,
-                                MatriculaRepository matriculaRepository, AsignacionInstructorRepository asignacionRepository) {
-        this.programaRepository = programaRepository;
-        this.fichaRepository = fichaRepository;
-        this.aprendizRepository = aprendizRepository;
-        this.instructorRepository = instructorRepository;
-        this.matriculaRepository = matriculaRepository;
-        this.asignacionRepository = asignacionRepository;
+    public AuditoriaController(ProgramaDao programaDao, FichaDao fichaDao,
+                                AprendizDao aprendizDao, InstructorDao instructorDao,
+                                MatriculaDao matriculaDao, AsignacionInstructorDao asignacionDao) {
+        this.programaDao = programaDao;
+        this.fichaDao = fichaDao;
+        this.aprendizDao = aprendizDao;
+        this.instructorDao = instructorDao;
+        this.matriculaDao = matriculaDao;
+        this.asignacionDao = asignacionDao;
     }
 
     public record ResumenFicha(Ficha ficha, int matriculados, String instructores) {
@@ -43,15 +43,15 @@ public class AuditoriaController {
 
     @GetMapping
     public String panel(Model model) {
-        model.addAttribute("totalProgramas", programaRepository.count());
-        model.addAttribute("totalFichas", fichaRepository.count());
-        model.addAttribute("totalAprendices", aprendizRepository.count());
-        model.addAttribute("totalInstructores", instructorRepository.count());
+        model.addAttribute("totalProgramas", programaDao.count());
+        model.addAttribute("totalFichas", fichaDao.count());
+        model.addAttribute("totalAprendices", aprendizDao.count());
+        model.addAttribute("totalInstructores", instructorDao.count());
 
-        List<ResumenFicha> resumenes = fichaRepository.findAll().stream()
+        List<ResumenFicha> resumenes = fichaDao.findAll().stream()
                 .map(ficha -> {
-                    int matriculados = matriculaRepository.findByFichaId(ficha.getId()).size();
-                    String instructores = asignacionRepository.findByFichaId(ficha.getId()).stream()
+                    int matriculados = matriculaDao.findByFichaId(ficha.getId()).size();
+                    String instructores = asignacionDao.findByFichaId(ficha.getId()).stream()
                             .map(a -> a.getInstructor().getUsuario().getNombreCompleto())
                             .distinct()
                             .collect(Collectors.joining(", "));

@@ -1,14 +1,14 @@
-package com.sena.cipa.repositorio;
+package com.sena.cipa.dao;
 
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.sena.cipa.modelo.EstadoGeneral;
-import com.sena.cipa.modelo.RolNombre;
 import com.sena.cipa.modelo.Usuario;
+import com.sena.cipa.modelo.enums.EstadoGeneral;
+import com.sena.cipa.modelo.enums.RolNombre;
 
-public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
+public interface UsuarioDao extends JpaRepository<Usuario, Long> {
 
     Optional<Usuario> findByCorreo(String correo);
 

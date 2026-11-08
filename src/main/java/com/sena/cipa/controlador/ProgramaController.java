@@ -12,24 +12,24 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.sena.cipa.modelo.EstadoGeneral;
-import com.sena.cipa.modelo.NivelFormacion;
+import com.sena.cipa.dao.ProgramaDao;
 import com.sena.cipa.modelo.Programa;
-import com.sena.cipa.repositorio.ProgramaRepository;
+import com.sena.cipa.modelo.enums.EstadoGeneral;
+import com.sena.cipa.modelo.enums.NivelFormacion;
 
 @Controller
 @RequestMapping("/programas")
 public class ProgramaController {
 
-    private final ProgramaRepository programaRepository;
+    private final ProgramaDao programaDao;
 
-    public ProgramaController(ProgramaRepository programaRepository) {
-        this.programaRepository = programaRepository;
+    public ProgramaController(ProgramaDao programaDao) {
+        this.programaDao = programaDao;
     }
 
     @GetMapping
     public String listado(Model model) {
-        model.addAttribute("programas", programaRepository.findAll());
+        model.addAttribute("programas", programaDao.findAll());
         return "programa/listado";
     }
 
@@ -42,7 +42,7 @@ public class ProgramaController {
 
     @GetMapping("/{id}/editar")
     public String editar(@PathVariable Long id, Model model) {
-        model.addAttribute("programa", programaRepository.findById(id).orElseThrow());
+        model.addAttribute("programa", programaDao.findById(id).orElseThrow());
         model.addAttribute("niveles", NivelFormacion.values());
         return "programa/formulario";
     }
@@ -57,14 +57,14 @@ public class ProgramaController {
         if (programa.getEstado() == null) {
             programa.setEstado(EstadoGeneral.ACTIVO);
         }
-        programaRepository.save(programa);
+        programaDao.save(programa);
         redirectAttributes.addFlashAttribute("mensaje", "Programa guardado correctamente.");
         return "redirect:/programas";
     }
 
     @PostMapping("/{id}/eliminar")
     public String eliminar(@PathVariable Long id, RedirectAttributes redirectAttributes) {
-        programaRepository.deleteById(id);
+        programaDao.deleteById(id);
         redirectAttributes.addFlashAttribute("mensaje", "Programa eliminado.");
         return "redirect:/programas";
     }

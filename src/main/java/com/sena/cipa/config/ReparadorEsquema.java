@@ -1,4 +1,4 @@
-package com.sena.cipa.servicio;
+package com.sena.cipa.config;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -8,6 +8,12 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Table;
+import jakarta.persistence.metamodel.EntityType;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
@@ -15,12 +21,6 @@ import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.Table;
-import jakarta.persistence.metamodel.EntityType;
 
 /**
  * Si la base de datos viene de una version anterior del sistema, sus tablas pueden tener columnas viejas

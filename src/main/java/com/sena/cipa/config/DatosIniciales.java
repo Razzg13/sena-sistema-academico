@@ -1,4 +1,4 @@
-package com.sena.cipa.servicio;
+package com.sena.cipa.config;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -6,22 +6,22 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import com.sena.cipa.modelo.EstadoGeneral;
+import com.sena.cipa.config.CuentasDemo.Cuenta;
+import com.sena.cipa.dao.UsuarioDao;
 import com.sena.cipa.modelo.Usuario;
-import com.sena.cipa.repositorio.UsuarioRepository;
-import com.sena.cipa.servicio.CuentasDemo.Cuenta;
+import com.sena.cipa.modelo.enums.EstadoGeneral;
 
 @Component
 public class DatosIniciales implements CommandLineRunner {
 
     private static final Logger log = LoggerFactory.getLogger(DatosIniciales.class);
 
-    private final UsuarioRepository usuarioRepository;
+    private final UsuarioDao usuarioDao;
     private final PasswordEncoder passwordEncoder;
     private final CuentasDemo cuentasDemo;
 
-    public DatosIniciales(UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder, CuentasDemo cuentasDemo) {
-        this.usuarioRepository = usuarioRepository;
+    public DatosIniciales(UsuarioDao usuarioDao, PasswordEncoder passwordEncoder, CuentasDemo cuentasDemo) {
+        this.usuarioDao = usuarioDao;
         this.passwordEncoder = passwordEncoder;
         this.cuentasDemo = cuentasDemo;
     }
@@ -29,10 +29,10 @@ public class DatosIniciales implements CommandLineRunner {
     @Override
     public void run(String... args) {
         for (Cuenta cuenta : CuentasDemo.CUENTAS) {
-            Usuario usuario = usuarioRepository.findByCorreoIgnoreCase(cuenta.correo()).orElse(null);
+            Usuario usuario = usuarioDao.findByCorreoIgnoreCase(cuenta.correo()).orElse(null);
             if (usuario == null) {
                 if (cuenta.seCreaSola()) {
-                    usuarioRepository.save(new Usuario(cuenta.documento(), cuenta.nombre(), cuenta.correo(),
+                    usuarioDao.save(new Usuario(cuenta.documento(), cuenta.nombre(), cuenta.correo(),
                             null, passwordEncoder.encode(cuenta.clave()), cuenta.rol()));
                     log.info("Usuario creado -> correo: {} / clave: {} / rol: {}", cuenta.correo(), cuenta.clave(), cuenta.rol());
                 }
@@ -44,7 +44,7 @@ public class DatosIniciales implements CommandLineRunner {
                 usuario.setClave(passwordEncoder.encode(cuenta.clave()));
                 usuario.setRol(cuenta.rol());
                 usuario.setEstado(EstadoGeneral.ACTIVO);
-                usuarioRepository.save(usuario);
+                usuarioDao.save(usuario);
                 log.info("Cuenta de prueba restablecida -> correo: {} / clave: {} / rol: {}", cuenta.correo(), cuenta.clave(), cuenta.rol());
             }
         }

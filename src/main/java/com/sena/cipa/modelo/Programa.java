@@ -9,6 +9,9 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
+import com.sena.cipa.modelo.enums.EstadoGeneral;
+import com.sena.cipa.modelo.enums.NivelFormacion;
+
 @Entity
 @Table(name = "programas")
 public class Programa {

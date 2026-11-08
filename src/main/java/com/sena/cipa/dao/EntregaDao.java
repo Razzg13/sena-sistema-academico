@@ -1,4 +1,4 @@
-package com.sena.cipa.repositorio;
+package com.sena.cipa.dao;
 
 import java.util.Collection;
 import java.util.List;
@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.sena.cipa.modelo.Entrega;
 
-public interface EntregaRepository extends JpaRepository<Entrega, Long> {
+public interface EntregaDao extends JpaRepository<Entrega, Long> {
 
     Optional<Entrega> findByActividadIdAndMatriculaId(Long actividadId, Long matriculaId);
 

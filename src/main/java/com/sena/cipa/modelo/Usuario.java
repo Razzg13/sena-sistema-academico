@@ -9,6 +9,9 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
+import com.sena.cipa.modelo.enums.EstadoGeneral;
+import com.sena.cipa.modelo.enums.RolNombre;
+
 @Entity
 @Table(name = "usuarios")
 public class Usuario {

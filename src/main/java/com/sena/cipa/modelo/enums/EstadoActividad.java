@@ -1,6 +1,10 @@
-package com.sena.cipa.modelo;
+package com.sena.cipa.modelo.enums;
 
 import java.time.LocalDate;
+
+import com.sena.cipa.modelo.ActividadEvaluativa;
+import com.sena.cipa.modelo.Entrega;
+import com.sena.cipa.modelo.Evaluacion;
 
 public enum EstadoActividad {
     PENDIENTE("Pendiente"),

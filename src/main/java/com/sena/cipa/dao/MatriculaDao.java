@@ -1,14 +1,14 @@
-package com.sena.cipa.repositorio;
+package com.sena.cipa.dao;
 
 import java.util.Collection;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.sena.cipa.modelo.EstadoMatricula;
 import com.sena.cipa.modelo.Matricula;
+import com.sena.cipa.modelo.enums.EstadoMatricula;
 
-public interface MatriculaRepository extends JpaRepository<Matricula, Long> {
+public interface MatriculaDao extends JpaRepository<Matricula, Long> {
 
     List<Matricula> findByAprendizId(Long aprendizId);
 

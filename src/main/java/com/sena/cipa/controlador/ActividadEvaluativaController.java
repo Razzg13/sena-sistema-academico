@@ -23,21 +23,21 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.sena.cipa.dao.ActividadEvaluativaDao;
+import com.sena.cipa.dao.EntregaDao;
+import com.sena.cipa.dao.EvaluacionDao;
+import com.sena.cipa.dao.FichaDao;
+import com.sena.cipa.dao.MatriculaDao;
 import com.sena.cipa.dto.CalificarForm;
 import com.sena.cipa.excepcion.NegocioException;
 import com.sena.cipa.modelo.ActividadEvaluativa;
 import com.sena.cipa.modelo.Entrega;
-import com.sena.cipa.modelo.EstadoFicha;
-import com.sena.cipa.modelo.EstadoMatricula;
 import com.sena.cipa.modelo.Evaluacion;
 import com.sena.cipa.modelo.Ficha;
-import com.sena.cipa.modelo.JuicioEvaluacion;
 import com.sena.cipa.modelo.Matricula;
-import com.sena.cipa.repositorio.ActividadEvaluativaRepository;
-import com.sena.cipa.repositorio.EntregaRepository;
-import com.sena.cipa.repositorio.EvaluacionRepository;
-import com.sena.cipa.repositorio.FichaRepository;
-import com.sena.cipa.repositorio.MatriculaRepository;
+import com.sena.cipa.modelo.enums.EstadoFicha;
+import com.sena.cipa.modelo.enums.EstadoMatricula;
+import com.sena.cipa.modelo.enums.JuicioEvaluacion;
 import com.sena.cipa.seguridad.UsuarioPrincipal;
 import com.sena.cipa.servicio.AccesoFichaService;
 import com.sena.cipa.util.Fechas;
@@ -49,21 +49,21 @@ public class ActividadEvaluativaController {
     private static final DateTimeFormatter FORMATO_FECHA = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
     private static final BigDecimal NOTA_MAXIMA = new BigDecimal("5");
 
-    private final ActividadEvaluativaRepository actividadRepository;
-    private final FichaRepository fichaRepository;
-    private final MatriculaRepository matriculaRepository;
-    private final EvaluacionRepository evaluacionRepository;
-    private final EntregaRepository entregaRepository;
+    private final ActividadEvaluativaDao actividadDao;
+    private final FichaDao fichaDao;
+    private final MatriculaDao matriculaDao;
+    private final EvaluacionDao evaluacionDao;
+    private final EntregaDao entregaDao;
     private final AccesoFichaService acceso;
 
-    public ActividadEvaluativaController(ActividadEvaluativaRepository actividadRepository, FichaRepository fichaRepository,
-                                          MatriculaRepository matriculaRepository, EvaluacionRepository evaluacionRepository,
-                                          EntregaRepository entregaRepository, AccesoFichaService acceso) {
-        this.actividadRepository = actividadRepository;
-        this.fichaRepository = fichaRepository;
-        this.matriculaRepository = matriculaRepository;
-        this.evaluacionRepository = evaluacionRepository;
-        this.entregaRepository = entregaRepository;
+    public ActividadEvaluativaController(ActividadEvaluativaDao actividadDao, FichaDao fichaDao,
+                                          MatriculaDao matriculaDao, EvaluacionDao evaluacionDao,
+                                          EntregaDao entregaDao, AccesoFichaService acceso) {
+        this.actividadDao = actividadDao;
+        this.fichaDao = fichaDao;
+        this.matriculaDao = matriculaDao;
+        this.evaluacionDao = evaluacionDao;
+        this.entregaDao = entregaDao;
         this.acceso = acceso;
     }
 
@@ -73,17 +73,17 @@ public class ActividadEvaluativaController {
     @GetMapping
     public String listado(@AuthenticationPrincipal UsuarioPrincipal principal, Model model) {
         List<ActividadEvaluativa> actividades = acceso.fichasRestringidas(principal)
-                .map(ids -> ids.isEmpty() ? List.<ActividadEvaluativa>of() : actividadRepository.findByFichaIdIn(ids))
-                .orElseGet(actividadRepository::findAll);
+                .map(ids -> ids.isEmpty() ? List.<ActividadEvaluativa>of() : actividadDao.findByFichaIdIn(ids))
+                .orElseGet(actividadDao::findAll);
 
         Map<Long, Integer> matriculadosPorFicha = new HashMap<>();
         List<FilaActividad> filas = new ArrayList<>();
         for (ActividadEvaluativa actividad : actividades) {
             Long fichaId = actividad.getFicha().getId();
             int matriculados = matriculadosPorFicha.computeIfAbsent(fichaId,
-                    id -> matriculaRepository.findByFichaIdAndEstado(id, EstadoMatricula.ACTIVA).size());
-            int entregas = entregaRepository.findByActividadId(actividad.getId()).size();
-            int calificadas = (int) evaluacionRepository.findByActividadId(actividad.getId()).stream()
+                    id -> matriculaDao.findByFichaIdAndEstado(id, EstadoMatricula.ACTIVA).size());
+            int entregas = entregaDao.findByActividadId(actividad.getId()).size();
+            int calificadas = (int) evaluacionDao.findByActividadId(actividad.getId()).stream()
                     .filter(e -> e.getCalificacion() != null).count();
             filas.add(new FilaActividad(actividad, matriculados, entregas, calificadas));
         }
@@ -99,7 +99,7 @@ public class ActividadEvaluativaController {
                          @AuthenticationPrincipal UsuarioPrincipal principal, Model model) {
         ActividadEvaluativa actividad = new ActividadEvaluativa();
         if (ficha != null && acceso.puedeOperarFicha(principal, ficha)) {
-            fichaRepository.findById(ficha).ifPresent(actividad::setFicha);
+            fichaDao.findById(ficha).ifPresent(actividad::setFicha);
         }
         model.addAttribute("actividad", actividad);
         model.addAttribute("fichas", fichasEnEjecucionPermitidas(principal));
@@ -120,7 +120,7 @@ public class ActividadEvaluativaController {
         if (actividad.getNombre() == null || actividad.getNombre().isBlank()) {
             throw new NegocioException("La actividad necesita un nombre.", "/actividades/nuevo");
         }
-        actividadRepository.save(actividad);
+        actividadDao.save(actividad);
         redirectAttributes.addFlashAttribute("mensaje", "Actividad asignada a la ficha " + ficha.getNumero()
                 + ". Los aprendices ya pueden verla y entregarla.");
         return "redirect:/actividades";
@@ -128,10 +128,10 @@ public class ActividadEvaluativaController {
 
     @GetMapping("/{id}/calificar")
     public String calificar(@PathVariable Long id, @AuthenticationPrincipal UsuarioPrincipal principal, Model model) {
-        ActividadEvaluativa actividad = actividadRepository.findById(id).orElseThrow();
+        ActividadEvaluativa actividad = actividadDao.findById(id).orElseThrow();
         acceso.exigirFicha(principal, actividad.getFicha().getId());
 
-        Map<Long, Entrega> entregas = entregaRepository.findByActividadId(id).stream()
+        Map<Long, Entrega> entregas = entregaDao.findByActividadId(id).stream()
                 .collect(Collectors.toMap(e -> e.getMatricula().getId(), Function.identity()));
 
         CalificarForm form = new CalificarForm();
@@ -139,7 +139,7 @@ public class ActividadEvaluativaController {
             CalificarForm.Item item = new CalificarForm.Item();
             item.setMatriculaId(matricula.getId());
             item.setNombreAprendiz(matricula.getAprendiz().getUsuario().getNombreCompleto());
-            evaluacionRepository.findByActividadIdAndMatriculaId(id, matricula.getId()).ifPresent(existente -> {
+            evaluacionDao.findByActividadIdAndMatriculaId(id, matricula.getId()).ifPresent(existente -> {
                 item.setCalificacion(existente.getCalificacion());
                 item.setJuicio(existente.getJuicio());
                 item.setRetroalimentacion(existente.getRetroalimentacion());
@@ -165,7 +165,7 @@ public class ActividadEvaluativaController {
     public String guardarCalificacion(@PathVariable Long id, @ModelAttribute CalificarForm form,
                                        @AuthenticationPrincipal UsuarioPrincipal principal,
                                        RedirectAttributes redirectAttributes) {
-        ActividadEvaluativa actividad = actividadRepository.findById(id).orElseThrow();
+        ActividadEvaluativa actividad = actividadDao.findById(id).orElseThrow();
         acceso.exigirFicha(principal, actividad.getFicha().getId());
 
         Map<Long, Matricula> permitidas = matriculasActivas(actividad).stream()
@@ -180,7 +180,7 @@ public class ActividadEvaluativaController {
             }
             BigDecimal nota = item.getCalificacion();
             String retroalimentacion = item.getRetroalimentacion() == null ? "" : item.getRetroalimentacion().trim();
-            Optional<Evaluacion> existente = evaluacionRepository.findByActividadIdAndMatriculaId(id, matricula.getId());
+            Optional<Evaluacion> existente = evaluacionDao.findByActividadIdAndMatriculaId(id, matricula.getId());
 
             if (nota == null && retroalimentacion.isEmpty() && existente.isEmpty()) {
                 continue;
@@ -206,7 +206,7 @@ public class ActividadEvaluativaController {
             porGuardar.add(evaluacion);
         }
 
-        evaluacionRepository.saveAll(porGuardar);
+        evaluacionDao.saveAll(porGuardar);
         redirectAttributes.addFlashAttribute("mensaje", porGuardar.isEmpty()
                 ? "No se registraron calificaciones: ingresa una nota o una retroalimentacion."
                 : "Calificaciones guardadas (" + porGuardar.size() + ").");
@@ -215,15 +215,15 @@ public class ActividadEvaluativaController {
 
     private List<Matricula> matriculasActivas(ActividadEvaluativa actividad) {
         List<Matricula> matriculas = new ArrayList<>(
-                matriculaRepository.findByFichaIdAndEstado(actividad.getFicha().getId(), EstadoMatricula.ACTIVA));
+                matriculaDao.findByFichaIdAndEstado(actividad.getFicha().getId(), EstadoMatricula.ACTIVA));
         matriculas.sort(Comparator.comparing(m -> m.getAprendiz().getUsuario().getNombreCompleto()));
         return matriculas;
     }
 
     private List<Ficha> fichasEnEjecucionPermitidas(UsuarioPrincipal principal) {
         List<Ficha> fichas = acceso.fichasRestringidas(principal)
-                .map(ids -> fichaRepository.findAllById(ids))
-                .orElseGet(fichaRepository::findAll);
+                .map(ids -> fichaDao.findAllById(ids))
+                .orElseGet(fichaDao::findAll);
         return fichas.stream().filter(f -> f.getEstado() == EstadoFicha.EN_EJECUCION).toList();
     }
 }

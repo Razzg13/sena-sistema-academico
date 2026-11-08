@@ -1,12 +1,12 @@
-package com.sena.cipa.servicio;
+package com.sena.cipa.config;
 
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import com.sena.cipa.modelo.RolNombre;
-import com.sena.cipa.repositorio.UsuarioRepository;
+import com.sena.cipa.dao.UsuarioDao;
+import com.sena.cipa.modelo.enums.RolNombre;
 
 /**
  * Cuentas de prueba del sistema. En modo demo (base H2 o app.cuentas-demo=true)
@@ -35,13 +35,13 @@ public class CuentasDemo {
     );
 
     private final boolean activo;
-    private final UsuarioRepository usuarioRepository;
+    private final UsuarioDao usuarioDao;
 
     public CuentasDemo(@Value("${app.cuentas-demo:false}") boolean forzado,
                        @Value("${spring.datasource.url:}") String urlBase,
-                       UsuarioRepository usuarioRepository) {
+                       UsuarioDao usuarioDao) {
         this.activo = forzado || urlBase.startsWith("jdbc:h2:");
-        this.usuarioRepository = usuarioRepository;
+        this.usuarioDao = usuarioDao;
     }
 
     public boolean activo() {
@@ -53,6 +53,6 @@ public class CuentasDemo {
         if (!activo) {
             return List.of();
         }
-        return CUENTAS.stream().filter(c -> usuarioRepository.existsByCorreo(c.correo())).toList();
+        return CUENTAS.stream().filter(c -> usuarioDao.existsByCorreo(c.correo())).toList();
     }
 }

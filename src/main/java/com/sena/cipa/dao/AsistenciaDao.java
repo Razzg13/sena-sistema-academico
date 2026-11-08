@@ -1,4 +1,4 @@
-package com.sena.cipa.repositorio;
+package com.sena.cipa.dao;
 
 import java.util.Collection;
 import java.util.List;
@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.sena.cipa.modelo.Asistencia;
 
-public interface AsistenciaRepository extends JpaRepository<Asistencia, Long> {
+public interface AsistenciaDao extends JpaRepository<Asistencia, Long> {
 
     List<Asistencia> findBySesionId(Long sesionId);
 
